@@ -19,3 +19,15 @@ model Product {
 
    @@map("products")
 }
+
+model User{
+   id             Int @id @default(autoincrement())
+   email          String @unique @default("")
+   password_hash  String @default("")
+   permission     String?
+   created_at     DateTime @default(now())
+   update_at     DateTime @default(now())
+
+   @@map("user")
+}
+
