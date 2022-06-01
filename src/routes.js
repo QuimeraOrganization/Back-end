@@ -31,7 +31,7 @@ router.post("/token", token.handle);
 /*
 rota para lougout, destruir o token.
 app.post('/logout', function(req, res) {
-    res.json({ auth: false, token: null });
+    res.json({ authorization: false, token: null });
 })
 
 */
