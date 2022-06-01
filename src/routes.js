@@ -23,7 +23,7 @@ router.get("/allUsers", findAllUsers.findAllUsers);
 //UPDATES
 router.put("/user/:id", loginRequired, updateUser.updateUser);
 //DELETES
-router.delete("user/:id", deleteUser.deleteUser);
+router.delete("/user/:id", loginRequired, deleteUser.deleteUser);
 
 //TOKEN ROUTES
 router.post("/token", token.handle);

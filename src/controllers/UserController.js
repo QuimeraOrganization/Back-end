@@ -6,15 +6,20 @@ export class UsersController {
     try {
       //recebo o email e password do body
       const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(401).json({
+          errors: ["Por favor, informe seu email e senha!"],
+        });
+      }
       //estou fazendo uma consulta na tabela user, verificando se já existe user com o email que recebi do body.
-      let user = prismaClient.user.findUnique({
+      let user = await prismaClient.user.findUnique({
         where: {
           email,
         },
       });
       //se existir retorno um erro
       if (user) {
-        return res.json({ error: "Usuário já Cadastrado!" });
+        return res.json({ error: "Usuário já cadastrado" });
       }
       //então, crio o user no banco com o prismaClient
       user = await prismaClient.user.create({
@@ -25,9 +30,11 @@ export class UsersController {
           password_hash: await bcryptjs.hash(password, 8),
         },
       });
-      return res.json(user);
+      return res
+        .status(201)
+        .json({ message: `Usuário cadastrado com sucesso!`, user });
     } catch (err) {
-      return res.json({ message: err });
+      return res.status(400).json({ error: err.message });
     }
   }
 
@@ -45,9 +52,9 @@ export class UsersController {
         return res.json({ error: "Esse usuário não existe!" });
       }
 
-      return res.json(user);
+      return res.status(200).json(user);
     } catch (err) {
-      return res.json({ message: err });
+      return res.status(500).json({ error: err.message });
     }
   }
 
@@ -59,9 +66,9 @@ export class UsersController {
       if (!users) {
         return res.json({ error: "Nenhum usuário cadastrado!" });
       }
-      return res.json(users);
+      return res.status(200).json(users);
     } catch (err) {
-      return res.json({ message: err });
+      return res.status(500).json({ error: err.message });
     }
   }
 
@@ -69,7 +76,12 @@ export class UsersController {
     try {
       const { id } = req.params;
       const { email, password } = req.body;
-
+      //caso o user esqueça o email ou senha
+      if (!email || !password) {
+        return res.status(401).json({
+          errors: ["Por favor, informe seu email e senha!"],
+        });
+      }
       //consulta o banco pelo o id e verifica se o user existe antes de fazer o update;
       let user = prismaClient.user.findUnique({
         where: {
@@ -90,9 +102,13 @@ export class UsersController {
           password_hash: await bcryptjs.hash(password, 8),
         },
       });
-      return res.json(user);
+      return res
+        .status(200)
+        .json({ message: `Usuário atualizado com sucesso!`, user });
     } catch (err) {
-      return res.json({ message: `Email deste usuário está invalido!` });
+      return res
+        .status(500)
+        .json({ message: `Email deste usuário está invalido!` });
     }
   }
 
@@ -113,9 +129,9 @@ export class UsersController {
           id: Number(id),
         },
       });
-      return res.json({ message: "Usuário deletado!" });
+      return res.status(200).json({ message: "Usuário deletado com sucesso!" });
     } catch (err) {
-      return res.json({ message: `ERRO:${err}` });
+      return res.status(500).json({ error: err.message });
     }
   }
 }
