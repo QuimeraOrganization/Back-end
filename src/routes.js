@@ -16,14 +16,14 @@ const updateUser = new UsersController();
 const deleteUser = new UsersController();
 
 //POSTS
-router.post("/user", createUser.createUser);
+router.post("/users", createUser.createUser);
 //GETS
-router.get("/user/:id", loginRequired, findUser.findUser);
-router.get("/allUsers", findAllUsers.findAllUsers);
+router.get("/users/:id", loginRequired, findUser.findUser);
+router.get("/users", findAllUsers.findAllUsers);
 //UPDATES
-router.put("/user/:id", loginRequired, updateUser.updateUser);
+router.put("/users/:id", loginRequired, updateUser.updateUser);
 //DELETES
-router.delete("/user/:id", loginRequired, deleteUser.deleteUser);
+router.delete("/users/:id", loginRequired, deleteUser.deleteUser);
 
 //TOKEN ROUTES
 router.post("/token", token.handle);
