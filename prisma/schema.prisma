@@ -31,3 +31,12 @@ model User{
    @@map("user")
 }
 
+model Feedback {
+  id        Int    @id @default(autoincrement())
+  contents  String
+  userId    Int    @map("user_id")
+  productId Int    @map("product_id")
+  create_at DateTime @default(now())
+
+  @@map("feedbacks")
+}
