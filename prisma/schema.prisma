@@ -16,7 +16,7 @@ model Product {
    description String
    image       String
    verified    Boolean @default(false)
-
+   product Feedback[]
    @@map("products")
 }
 
@@ -27,16 +27,18 @@ model User{
    permission     String?
    created_at     DateTime @default(now())
    update_at     DateTime @default(now())
-
+   feedback Feedback[]
    @@map("user")
 }
 
 model Feedback {
-  id        Int    @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   contents  String
-  userId    Int    @map("user_id")
-  productId Int    @map("product_id")
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id])
   create_at DateTime @default(now())
-
+  update_at DateTime @default(now())
   @@map("feedbacks")
 }
