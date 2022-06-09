@@ -2,33 +2,40 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-   provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-   provider = "postgresql"
-   url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Product {
-   id          Int     @id @default(autoincrement())
-   name        String
-   description String
-   image       String
-   verified    Boolean @default(false)
-   product Feedback[]
-   @@map("products")
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  image       String?
+  verified    Boolean    @default(false)
+  userId      Int        @map("user_id")
+  created_at  DateTime   @default(now())
+  update_at   DateTime   @default(now())
+  feedbacks   Feedback[]
+  user        User       @relation(fields: [userId], references: [id])
+
+  @@map("products")
 }
 
-model User{
-   id             Int @id @default(autoincrement())
-   email          String @unique @default("")
-   password_hash  String @default("")
-   permission     String?
-   created_at     DateTime @default(now())
-   update_at     DateTime @default(now())
-   feedback Feedback[]
-   @@map("user")
+model User {
+  id            Int        @id @default(autoincrement())
+  email         String     @unique @default("")
+  password_hash String     @default("")
+  permission    String?
+  created_at    DateTime   @default(now())
+  update_at     DateTime   @default(now())
+  feedback      Feedback[]
+  products      Product[]
+
+  @@map("user")
 }
 
 model Feedback {
@@ -40,5 +47,6 @@ model Feedback {
   product   Product  @relation(fields: [productId], references: [id])
   create_at DateTime @default(now())
   update_at DateTime @default(now())
+
   @@map("feedbacks")
 }
