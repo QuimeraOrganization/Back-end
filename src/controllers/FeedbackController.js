@@ -15,7 +15,7 @@ export class FeedbackController {
         .status(201)
         .json({ message: 'Feedback cadastrado com sucesso!', feedback });
     } catch (err) {
-      return res.status(400).json({ error: err.message });
+      return res.status(400).json({ message: err.message });
     }
   }
 
@@ -29,12 +29,12 @@ export class FeedbackController {
       });
 
       if (!feedback) {
-        return res.json({ error: 'Esse feedback não existe!' });
+        return res.status(404).json({ message: 'Feedback não encontrado' });
       }
 
       return res.status(200).json(feedback);
     } catch (err) {
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ message: err.message });
     }
   }
 
@@ -42,12 +42,9 @@ export class FeedbackController {
     try {
       const feedbacks = await prismaClient.feedback.findMany();
 
-      if (!feedbacks) {
-        return res.json({ error: 'Nenhum feedback encontrado!' });
-      }
       return res.status(200).json(feedbacks);
     } catch (err) {
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ message: err.message });
     }
   }
 
@@ -63,7 +60,7 @@ export class FeedbackController {
       });
 
       if (!feedback) {
-        return res.json({ error: 'Esse feedback não existe!' });
+        return res.status(404).json({ message: 'Feedback não encontrado!' });
       }
 
       feedback = await prismaClient.feedback.update({
@@ -93,7 +90,7 @@ export class FeedbackController {
         },
       });
       if (!feedback) {
-        return res.json({ error: 'Esse feedback não existe!' });
+        return res.status(404).json({ message: 'Feedback não encontrado!' });
       }
 
       await prismaClient.feedback.delete({
@@ -105,7 +102,7 @@ export class FeedbackController {
         .status(200)
         .json({ message: 'Feedback deletado com sucesso!' });
     } catch (err) {
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ message: err.message });
     }
   }
 }
