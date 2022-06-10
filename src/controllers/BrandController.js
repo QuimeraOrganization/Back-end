@@ -94,6 +94,18 @@ export class BrandController {
         where: {
           id: Number(id),
         },
+        select: {
+          id: true,
+          name: true,
+          create_at: true,
+          update_at: true,
+          product: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
         data: {
           name,
           productId,
