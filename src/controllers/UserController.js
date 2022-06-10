@@ -23,6 +23,13 @@ export class UsersController {
       }
       //então, crio o user no banco com o prismaClient
       user = await prismaClient.user.create({
+        select: {
+          id: true,
+          email: true,
+          permission: true,
+          created_at: true,
+          update_at: true,
+        },
         data: {
           email,
           //aqui está sendo feito o hash da senha do user
@@ -107,6 +114,13 @@ export class UsersController {
       user = await prismaClient.user.update({
         where: {
           id: Number(id),
+        },
+        select: {
+          id: true,
+          email: true,
+          permission: true,
+          created_at: true,
+          update_at: true,
         },
         data: {
           email,
