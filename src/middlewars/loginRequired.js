@@ -13,7 +13,7 @@ export default async (req, res, next) => {
 
   try {
     // recebo os dados que vem no token, e verifico com o jwt se o token que veio no
-    // authorization é
+    // authorization é valido!
     const dados = jwt.verify(token, process.env.TOKEN_SECRET);
     const { id, email } = dados;
     const user = await prismaClient.user.findUnique({
