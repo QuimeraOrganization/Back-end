@@ -1,4 +1,4 @@
-import { prismaClient } from '../database/prismaClient.js';
+import { prismaClient } from "../database/prismaClient.js";
 
 export class FeedbackController {
   async createFeedback(req, res) {
@@ -13,7 +13,7 @@ export class FeedbackController {
       });
       return res
         .status(201)
-        .json({ message: 'Feedback cadastrado com sucesso!', feedback });
+        .json({ message: "Feedback cadastrado com sucesso!", feedback });
     } catch (err) {
       return res.status(400).json({ message: err.message });
     }
@@ -26,10 +26,28 @@ export class FeedbackController {
         where: {
           id: Number(id),
         },
+        select: {
+          id: true,
+          contents: true,
+          create_at: true,
+          update_at: true,
+          product: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              email: true,
+            },
+          },
+        },
       });
 
       if (!feedback) {
-        return res.status(404).json({ message: 'Feedback não encontrado' });
+        return res.status(404).json({ message: "Feedback não encontrado" });
       }
 
       return res.status(200).json(feedback);
@@ -40,7 +58,29 @@ export class FeedbackController {
 
   async findAllFeedbacks(req, res) {
     try {
-      const feedbacks = await prismaClient.feedback.findMany();
+      const feedbacks = await prismaClient.feedback.findMany({
+        orderBy: {
+          id: "desc",
+        },
+        select: {
+          id: true,
+          contents: true,
+          create_at: true,
+          update_at: true,
+          product: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              email: true,
+            },
+          },
+        },
+      });
 
       return res.status(200).json(feedbacks);
     } catch (err) {
@@ -60,7 +100,7 @@ export class FeedbackController {
       });
 
       if (!feedback) {
-        return res.status(404).json({ message: 'Feedback não encontrado!' });
+        return res.status(404).json({ message: "Feedback não encontrado!" });
       }
 
       feedback = await prismaClient.feedback.update({
@@ -75,9 +115,9 @@ export class FeedbackController {
       });
       return res
         .status(200)
-        .json({ message: 'Feedback atualizado com sucesso!', feedback });
+        .json({ message: "Feedback atualizado com sucesso!", feedback });
     } catch (err) {
-      return res.status(500).json({ message: 'Erro no servidor' });
+      return res.status(500).json({ message: "Erro no servidor" });
     }
   }
 
@@ -90,7 +130,7 @@ export class FeedbackController {
         },
       });
       if (!feedback) {
-        return res.status(404).json({ message: 'Feedback não encontrado!' });
+        return res.status(404).json({ message: "Feedback não encontrado!" });
       }
 
       await prismaClient.feedback.delete({
@@ -100,7 +140,7 @@ export class FeedbackController {
       });
       return res
         .status(200)
-        .json({ message: 'Feedback deletado com sucesso!' });
+        .json({ message: "Feedback deletado com sucesso!" });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
