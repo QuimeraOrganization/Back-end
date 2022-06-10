@@ -1,18 +1,17 @@
 import { Router } from "express";
-import { TokenController } from "./controllers/tokenController/TokenController.js";
-import { userRoutes } from "./routes/userRoutes.js";
-import { productRoutes } from "./routes/productRoutes.js";
-import { feedbackRoutes } from "./routes/feedbackRoutes.js";
+import { userRoutes } from "./userRoutes.js";
+import { productRoutes } from "./productRoutes.js";
+import { feedbackRoutes } from "./feedbackRoutes.js";
+import { tokenRoutes } from "./tokenRoutes.js";
 
 const router = Router();
-const token = new TokenController();
 
 router.use("/users", userRoutes);
 router.use("/products", productRoutes);
 router.use("/feedbacks", feedbackRoutes);
 
 //TOKEN ROUTES
-router.post("/token", token.handle);
+router.use("/token", tokenRoutes);
 
 /*
 rota para lougout, destruir o token.
