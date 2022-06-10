@@ -20,6 +20,7 @@ model Product {
   created_at  DateTime   @default(now())
   update_at   DateTime   @default(now())
   feedbacks   Feedback[]
+  brand       Brand[]
   user        User       @relation(fields: [userId], references: [id])
 
   @@map("products")
@@ -49,4 +50,17 @@ model Feedback {
   update_at DateTime @default(now())
 
   @@map("feedbacks")
+}
+
+
+model Brand{
+  id          Int       @id @default(autoincrement())
+  name        String 
+  productId   Int       @map("product_id")
+  product     Product   @relation(fields: [productId], references: [id])
+
+  create_at   DateTime  @default(now())
+  update_at   DateTime  @default(now())
+
+  @@map("brand")
 }
