@@ -32,13 +32,17 @@ export class TokenController {
       return res.json({ message: "Senha inválida!" });
     }
 
-    const { id } = user;
+    const { id, permission } = user;
     //verifico se os dados estão ok, se sim, ele gera o token,
     // por fim uma expiração de 1d(pode ser mudado), isso quer dizer que após um dia,
     // o usuário terá que se autenticar novamente
-    const token = jwt.sign({ id, email }, process.env.TOKEN_SECRET, {
-      expiresIn: process.env.TOKEN_EXPIRATION,
-    });
+    const token = jwt.sign(
+      { id, email, permission },
+      process.env.TOKEN_SECRET,
+      {
+        expiresIn: process.env.TOKEN_EXPIRATION,
+      }
+    );
 
     return res.json({ token });
   }
