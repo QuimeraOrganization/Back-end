@@ -30,7 +30,7 @@ model User {
   id            Int        @id @default(autoincrement())
   email         String     @unique @default("")
   password_hash String     @default("")
-  permission    String?
+  permission    Boolean?   @default(false)
   created_at    DateTime   @default(now())
   update_at     DateTime   @default(now())
   feedback      Feedback[]
