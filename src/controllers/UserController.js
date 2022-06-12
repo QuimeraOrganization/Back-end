@@ -5,7 +5,7 @@ export class UsersController {
   async createUser(req, res) {
     try {
       //recebo o email e password do body
-      const { email, password } = req.body;
+      const { email, password, permission } = req.body;
       if (!email || !password) {
         return res.status(401).json({
           message: ["Por favor, informe seu email e senha!"],
@@ -32,6 +32,7 @@ export class UsersController {
         },
         data: {
           email,
+          permission,
           //aqui está sendo feito o hash da senha do user
           //onde passo no bcryptjs o password que recebi do body, e o segundo parametro é o salt(uma string aleatória)
           password_hash: await bcryptjs.hash(password, 8),
@@ -93,7 +94,7 @@ export class UsersController {
   async updateUser(req, res) {
     try {
       const { id } = req.params;
-      const { email, password } = req.body;
+      const { email, password, permission } = req.body;
       //caso o user esqueça o email ou senha
       if (!email || !password) {
         return res.status(401).json({
@@ -124,6 +125,7 @@ export class UsersController {
         },
         data: {
           email,
+          permission,
           password_hash: await bcryptjs.hash(password, 8),
         },
       });
