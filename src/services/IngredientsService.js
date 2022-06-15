@@ -1,7 +1,7 @@
 import { prismaClient } from "../database/prismaClient.js";
-import { AppError } from "../errors/AppError.js";
+import { AppException } from "../exceptions/AppException.js";
 
-export class IngredientsService {
+class IngredientsService {
   async save(name) {
     const ingredientAlreadyExists = await prismaClient.ingredient.findFirst({
       where: {
@@ -10,7 +10,7 @@ export class IngredientsService {
     });
 
     if (ingredientAlreadyExists) {
-      throw new AppError("Já existe um ingrediente com esse nome cadastrado!", 400);
+      throw new AppException("Já existe um ingrediente com esse nome cadastrado!", 400);
     }
 
     const ingredient = await prismaClient.ingredient.create({
@@ -32,7 +32,7 @@ export class IngredientsService {
     });
 
     if (!ingredientExists) {
-      throw new AppError("Ingrediente Não Encontrado", 404);
+      throw new AppException("Ingrediente Não Encontrado", 404);
     }
 
     const ingredientAlreadyExists = await prismaClient.ingredient.findFirst({
@@ -42,7 +42,7 @@ export class IngredientsService {
     });
 
     if (ingredientAlreadyExists) {
-      throw new AppError("Já existe um ingrediente com esse nome cadastrado!", 400);
+      throw new AppException("Já existe um ingrediente com esse nome cadastrado!", 400);
     }
 
     const ingredient = await prismaClient.ingredient.update({
@@ -68,16 +68,10 @@ export class IngredientsService {
     });
 
     if (!ingredientExists) {
-      throw new AppError("Ingrediente Não Encontrado", 404);
+      throw new AppException("Ingrediente Não Encontrado", 404);
     }
 
-    const ingredient = await prismaClient.ingredient.findUnique({
-      where: {
-        id: ingredientId
-      }
-    });
-
-    return ingredient;
+    return ingredientExists;
   }
 
   async findAll() {
@@ -96,7 +90,7 @@ export class IngredientsService {
     });
 
     if (!ingredientExists) {
-      throw new AppError("Ingrediente Não Encontrado", 404);
+      throw new AppException("Ingrediente Não Encontrado", 404);
     }
 
     await prismaClient.ingredient.delete({
@@ -106,3 +100,6 @@ export class IngredientsService {
     });
   }
 }
+
+const ingredientsService = new IngredientsService();
+export { ingredientsService };
