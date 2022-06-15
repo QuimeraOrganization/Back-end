@@ -5,7 +5,7 @@ export default async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({
-      errors: ["Login Required"],
+      message: ["Login Required"],
     });
   }
   //divido os valores que recebo em authorization com split, no caso aqui a gente só precisa do token
@@ -13,7 +13,7 @@ export default async (req, res, next) => {
 
   try {
     // recebo os dados que vem no token, e verifico com o jwt se o token que veio no
-    // authorization é
+    // authorization é valido!
     const dados = jwt.verify(token, process.env.TOKEN_SECRET);
     const { id, email } = dados;
     const user = await prismaClient.user.findUnique({
@@ -24,7 +24,7 @@ export default async (req, res, next) => {
 
     if (!user) {
       return res.status(401).json({
-        errors: ["Usuário inválido!!"],
+        message: ["Usuário inválido!!"],
       });
     }
 
@@ -35,7 +35,7 @@ export default async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(401).json({
-      errors: ["Token expirado ou inválido!"],
+      message: ["Token expirado ou inválido!"],
     });
   }
 };

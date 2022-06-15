@@ -19,6 +19,7 @@ model Product {
    product     Feedback[]
 
    @@map("products")
+   Brand Brand[]
 }
 
 model User {
@@ -51,4 +52,16 @@ model Ingredient {
    name String
 
    @@map("ingredients")
+}
+
+model Brand {
+   id        Int     @id @default(autoincrement())
+   name      String
+   productId Int     @map("product_id")
+   product   Product @relation(fields: [productId], references: [id])
+
+   create_at DateTime @default(now())
+   update_at DateTime @default(now())
+
+   @@map("brand")
 }
