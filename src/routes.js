@@ -5,6 +5,14 @@ import { FeedbackController } from "./controllers/FeedbackController.js";
 import { IngredientsController } from "./controllers/IngredientsController.js";
 import loginRequired from "./middlewars/loginRequired.js";
 
+import { validateRequest } from "./validatorS/RequestValidator.js";
+
+import { postIngredientsValidator } from
+  "./validators/ingredients/postIngredientsValidator.js";
+
+import { putIngredientsValidator } from
+  "./validators/ingredients/putIngredientsValidator.js";
+
 const router = Router();
 const token = new TokenController();
 
@@ -15,7 +23,7 @@ const ingredientsController = new IngredientsController();
 //POSTS
 router.post("/users", usersController.createUser);
 router.post("/feedbacks", feedbackController.createFeedback);
-router.post("/ingredients", ingredientsController.save);
+router.post("/ingredients", validateRequest(postIngredientsValidator), ingredientsController.save);
 
 //GETS
 router.get("/users/:id", loginRequired, usersController.findUser);
@@ -28,7 +36,7 @@ router.get("/ingredients/:id", ingredientsController.findById);
 //UPDATES
 router.put("/users/:id", loginRequired, usersController.updateUser);
 router.put("/feedbacks/:id", loginRequired, feedbackController.updateFeedback);
-router.put("/ingredients/:id", ingredientsController.update);
+router.put("/ingredients/:id", validateRequest(putIngredientsValidator), ingredientsController.update);
 
 //DELETES
 router.delete("/users/:id", loginRequired, usersController.deleteUser);
