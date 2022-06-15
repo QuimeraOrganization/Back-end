@@ -36,7 +36,7 @@ router.get("/ingredients/:id", ingredientsController.findById);
 //UPDATES
 router.put("/users/:id", loginRequired, usersController.updateUser);
 router.put("/feedbacks/:id", loginRequired, feedbackController.updateFeedback);
-router.put("/ingredients/:id", validateRequest(putIngredientsValidator), ingredientsController.update);
+router.put("/ingredients/:id", loginRequired, validateRequest(putIngredientsValidator), ingredientsController.update);
 
 //DELETES
 router.delete("/users/:id", loginRequired, usersController.deleteUser);
@@ -45,7 +45,7 @@ router.delete(
   loginRequired,
   feedbackController.deleteFeedback
 );
-router.delete("/ingredients/:id", ingredientsController.delete);
+router.delete("/ingredients/:id", loginRequired, ingredientsController.delete);
 
 //TOKEN ROUTES
 router.post("/token", token.handle);
