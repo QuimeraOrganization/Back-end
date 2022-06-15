@@ -1,7 +1,7 @@
-import { AppError } from "../errors/AppError.js";
+import { AppException } from "../exceptions/AppException.js";
 
 export function ExceptionHandler(error, request, response, next) {
-  if (error instanceof AppError) {
+  if (error instanceof AppException) {
     return response.status(error.statusCode).json({
       message: error.message,
     });
