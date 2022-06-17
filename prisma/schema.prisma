@@ -2,65 +2,82 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String
-  image       String?
-  verified    Boolean    @default(false)
-  userId      Int        @map("user_id")
-  created_at  DateTime   @default(now())
-  update_at   DateTime   @default(now())
-  feedbacks   Feedback[]
-  brand       Brand[]
-  user        User       @relation(fields: [userId], references: [id])
+   id          Int        @id @default(autoincrement())
+   name        String
+   description String
+   image       String
+   verified    Boolean    @default(false)
+   product     Feedback[]
 
-  @@map("products")
+   Brand                 Brand[]
+   IngredientsOnProducts IngredientsOnProducts[]
+   @@map("products")
 }
 
 model User {
-  id            Int        @id @default(autoincrement())
-  email         String     @unique @default("")
-  password_hash String     @default("")
-  permission    Boolean?   @default(false)
-  created_at    DateTime   @default(now())
-  update_at     DateTime   @default(now())
-  feedback      Feedback[]
-  products      Product[]
+   id            Int        @id @default(autoincrement())
+   email         String     @unique @default("")
+   password_hash String     @default("")
+   permission    String?
+   created_at    DateTime   @default(now())
+   update_at     DateTime   @default(now())
+   feedback      Feedback[]
 
-  @@map("user")
+   @@map("user")
 }
 
 model Feedback {
-  id        Int      @id @default(autoincrement())
-  contents  String
-  userId    Int      @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  productId Int      @map("product_id")
-  product   Product  @relation(fields: [productId], references: [id])
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+   id        Int      @id @default(autoincrement())
+   contents  String
+   userId    Int      @map("user_id")
+   user      User     @relation(fields: [userId], references: [id])
+   productId Int      @map("product_id")
+   product   Product  @relation(fields: [productId], references: [id])
+   create_at DateTime @default(now())
+   update_at DateTime @default(now())
 
-  @@map("feedbacks")
+   @@map("feedbacks")
 }
 
+model Ingredient {
+   id   Int    @id @default(autoincrement())
+   name String
 
-model Brand{
-  id          Int       @id @default(autoincrement())
-  name        String 
-  productId   Int       @map("product_id")
-  product     Product   @relation(fields: [productId], references: [id])
+   create_at DateTime @default(now())
+   update_at DateTime @default(now())
 
-  create_at   DateTime  @default(now())
-  update_at   DateTime  @default(now())
+   IngredientsOnProducts IngredientsOnProducts[]
+   @@map("ingredients")
+}
 
-  @@map("brand")
+model IngredientsOnProducts {
+   id           Int        @id @default(autoincrement())
+   ingredientId Int        @map("ingredient_id")
+   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+   productId    Int        @map("product_id")
+   product      Product    @relation(fields: [productId], references: [id])
+
+   create_at DateTime @default(now())
+   update_at DateTime @default(now())
+}
+
+model Brand {
+   id        Int     @id @default(autoincrement())
+   name      String
+   productId Int     @map("product_id")
+   product   Product @relation(fields: [productId], references: [id])
+
+   create_at DateTime @default(now())
+   update_at DateTime @default(now())
+
+   @@map("brand")
 }
