@@ -2,8 +2,10 @@ import { Router } from "express";
 import { userRoutes } from "./userRoutes.js";
 import { productRoutes } from "./productRoutes.js";
 import { feedbackRoutes } from "./feedbackRoutes.js";
+import { ingredientsRoutes } from "./ingredientsRoutes.js";
 import { tokenRoutes } from "./tokenRoutes.js";
 import { brandRoutes } from "./brandRoutes.js";
+import { categoryRoutes } from "./categoryRoutes.js";
 import swaggerUI from "swagger-ui-express";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url); // construct the require method
@@ -14,6 +16,9 @@ router.use("/users", userRoutes);
 router.use("/products", productRoutes);
 router.use("/feedbacks", feedbackRoutes);
 router.use("/brands", brandRoutes);
+router.use("/ingredients", ingredientsRoutes);
+router.use("/categories", categoryRoutes);
+
 //TOKEN ROUTES
 router.use("/token", tokenRoutes);
 
