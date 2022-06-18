@@ -28,7 +28,7 @@ ou não a presença dos ingredientes em sua composição e desse modo, aumentar 
 - [x] CRUD de Brands
 - [x] CRUD de Categories
 - [x] Token Controller
-- [x] Validaçõe com a biblioteca Yup
+- [x] Validações com a biblioteca Yup
 - [x] Autenticação JWT
 - [x] Criptofrafia do password com bcryptjs
 - [x] Middleware de login
@@ -56,7 +56,7 @@ $ npm install
 - TOKEN_EXPIRATION=1d(aqui varia, você decide quanto tempo para o token expirar)
 
 # Conecte o Prisma com o seu banco, no arquivo
-- schema.prisma
+- schema.prisma(obs:caso seu banco não seja o Postgresql)
 
 # Faça as migrates do Prisma a partir do comando
 $ npx prisma migrate dev
@@ -64,5 +64,5 @@ $ npx prisma migrate dev
 # Execute a aplicação em modo de desenvolvimento
 $ npm run dev
 
-# O servidor iniciará na porta:3030 - acesse <http://localhost:3333>
+# O servidor iniciará na porta:3333 - acesse <http://localhost:3333>
 ```
