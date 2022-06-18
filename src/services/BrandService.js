@@ -33,7 +33,7 @@ class BrandService {
     });
 
     if (!brand) {
-      throw new AppException("Marca não encontrada!", 404)
+      throw new AppException("Marca não encontrada!", 404);
     }
 
     return brand;
@@ -105,7 +105,7 @@ class BrandService {
     });
 
     if (!brand) {
-      throw new AppException("Marca não encontrado!", 404);
+      throw new AppException("Marca não encontrada!", 404);
     }
 
     await prismaClient.brand.delete({

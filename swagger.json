@@ -394,6 +394,7 @@
         }
       },
       "put": {
+        "security": [{ "bearerAuth": [] }],
         "summary": "Atualização de Produto!",
         "description": "Essa rota é responsável pela atualização do Produto!",
         "tags": ["Products"],

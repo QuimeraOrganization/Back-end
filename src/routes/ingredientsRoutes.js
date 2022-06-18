@@ -13,12 +13,21 @@ ingredientsRoutes.get("/", ingredientsController.findAll);
 ingredientsRoutes.get("/:id", ingredientsController.findById);
 
 //POST
-ingredientsRoutes.post("/", validateRequest(postIngredientsValidator), ingredientsController.save);
+ingredientsRoutes.post(
+  "/",
+  validateRequest(postIngredientsValidator),
+  ingredientsController.save
+);
 
 //PUT
-ingredientsRoutes.put("/:id", loginRequired, validateRequest(putIngredientsValidator), ingredientsController.update);
+ingredientsRoutes.put(
+  "/:id",
+  loginRequired,
+  validateRequest(putIngredientsValidator),
+  ingredientsController.update
+);
 
 //DELETE
 ingredientsRoutes.delete("/:id", loginRequired, ingredientsController.delete);
 
-export { ingredientsRoutes }
+export { ingredientsRoutes };
