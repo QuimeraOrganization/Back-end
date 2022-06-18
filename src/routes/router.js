@@ -4,7 +4,10 @@ import { productRoutes } from "./productRoutes.js";
 import { feedbackRoutes } from "./feedbackRoutes.js";
 import { tokenRoutes } from "./tokenRoutes.js";
 import { brandRoutes } from "./brandRoutes.js";
-
+import swaggerUI from "swagger-ui-express";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url); // construct the require method
+const swaggerDocument = require("../../swagger.json");
 const router = Router();
 
 router.use("/users", userRoutes);
@@ -13,6 +16,9 @@ router.use("/feedbacks", feedbackRoutes);
 router.use("/brands", brandRoutes);
 //TOKEN ROUTES
 router.use("/token", tokenRoutes);
+
+//SWAGGER ROUTES
+router.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 /*
 rota para lougout, destruir o token.
