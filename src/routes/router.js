@@ -5,6 +5,7 @@ import { feedbackRoutes } from "./feedbackRoutes.js";
 import { ingredientsRoutes } from "./ingredientsRoutes.js";
 import { tokenRoutes } from "./tokenRoutes.js";
 import { brandRoutes } from "./brandRoutes.js";
+import { categoryRoutes } from "./categoryRoutes.js";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.use("/products", productRoutes);
 router.use("/feedbacks", feedbackRoutes);
 router.use("/brands", brandRoutes);
 router.use("/ingredients", ingredientsRoutes);
+router.use("/categories", categoryRoutes);
 
 //TOKEN ROUTES
 router.use("/token", tokenRoutes);
