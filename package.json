@@ -5,7 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/serve.js"
+    "dev": "nodemon src/serve.js",
+    "build": "prisma generate",
+    "start": "node src/serve.js"
   },
   "keywords": [],
   "author": "",
