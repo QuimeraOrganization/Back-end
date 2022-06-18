@@ -21,7 +21,7 @@ model Product {
   update_at   DateTime   @default(now())
   feedbacks   Feedback[]
   brand       Brand[]
-  user        User       @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   IngredientsOnProducts IngredientsOnProducts[]
   CategoriesOnProducts  CategoriesOnProducts[]
@@ -29,11 +29,17 @@ model Product {
   @@map("products")
 }
 
+enum Permission {
+  USER
+  BRAND
+  ADMIN
+}
+
 model User {
   id            Int        @id @default(autoincrement())
   email         String     @unique @default("")
   password_hash String     @default("")
-  permission    Boolean?   @default(false)
+  permission    Permission @default(USER)
   created_at    DateTime   @default(now())
   update_at     DateTime   @default(now())
   feedback      Feedback[]

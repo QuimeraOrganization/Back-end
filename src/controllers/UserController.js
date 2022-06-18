@@ -1,6 +1,4 @@
-import { prismaClient } from "../database/prismaClient.js";
 import { userService } from "../services/UserService.js";
-import bcryptjs from "bcryptjs";
 
 export class UsersController {
   async createUser(req, res) {
@@ -31,8 +29,9 @@ export class UsersController {
 
   async updateUser(req, res) {
     const { id } = req.params;
+    const { authorization } = req.headers;
     const { email, password, permission } = req.body;
-    const user = await userService.updateUser(id, email, password, permission);
+    const user = await userService.updateUser(id, email, password, permission, authorization);
     return res
       .status(200)
       .json({ message: `Usuário atualizado com sucesso!`, user });
@@ -40,7 +39,9 @@ export class UsersController {
 
   async deleteUser(req, res) {
     const { id } = req.params;
-    userService.deleteUser(id);
-    return res.status(200).send("Usuário deletado com sucesso!");
+    const { authorization } = req.headers;
+
+    await userService.deleteUser(id, authorization);
+    return res.status(204).send();
   }
 }
