@@ -1,6 +1,8 @@
 import { prismaClient } from "../database/prismaClient.js";
 import { AppException } from "../exceptions/AppException.js";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+
 class UserService {
   async createUser(email, password, permission) {
     if (!email || !password) {
@@ -73,7 +75,12 @@ class UserService {
     return users;
   }
 
-  async updateUser(id, email, password, permission) {
+  async updateUser(id, email, password, permission, authorization) {
+
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException("Acesso permitido somente à administradores!", 401);
+    }
+
     //caso o user esqueça o email ou senha
     if (!email || !password) {
       throw new AppException("Por favor, informe seu email e senha!", 401);
@@ -109,7 +116,11 @@ class UserService {
     return user;
   }
 
-  async deleteUser(id) {
+  async deleteUser(id, authorization) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException("Acesso permitido somente à administradores!", 401);
+    }
+
     const user = await prismaClient.user.findUnique({
       where: {
         id: Number(id),
@@ -124,6 +135,22 @@ class UserService {
         id: Number(id),
       },
     });
+  }
+
+  validationPermission(idRequest, authorization) {
+    const [, token] = authorization.split(" ");
+    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const { id, permission } = data;
+
+    if (permission === "USER" || permission === "BRAND") {
+      if (id == idRequest) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (permission === "ADMIN") {
+      return true;
+    }
   }
 }
 
