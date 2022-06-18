@@ -5,18 +5,18 @@ class IngredientsService {
   async save(name) {
     const ingredientAlreadyExists = await prismaClient.ingredient.findFirst({
       where: {
-        name: name
-      }
+        name: name,
+      },
     });
 
     if (ingredientAlreadyExists) {
-      throw new AppException("Já existe um ingrediente com esse nome cadastrado!", 400);
+      throw new AppException("Ingrediente já cadastrado!", 400);
     }
 
     const ingredient = await prismaClient.ingredient.create({
       data: {
-        name
-      }
+        name,
+      },
     });
 
     return ingredient;
@@ -27,8 +27,8 @@ class IngredientsService {
 
     const ingredientExists = await prismaClient.ingredient.findUnique({
       where: {
-        id: ingredientId
-      }
+        id: ingredientId,
+      },
     });
 
     if (!ingredientExists) {
@@ -37,22 +37,25 @@ class IngredientsService {
 
     const ingredientAlreadyExists = await prismaClient.ingredient.findFirst({
       where: {
-        name: name
-      }
+        name: name,
+      },
     });
 
     if (ingredientAlreadyExists) {
-      throw new AppException("Já existe um ingrediente com esse nome cadastrado!", 400);
+      throw new AppException(
+        "Já existe um ingrediente com esse nome cadastrado!",
+        400
+      );
     }
 
     const ingredient = await prismaClient.ingredient.update({
       where: {
-        id: ingredientId
+        id: ingredientId,
       },
 
       data: {
-        name
-      }
+        name,
+      },
     });
 
     return ingredient;
@@ -63,8 +66,8 @@ class IngredientsService {
 
     const ingredientExists = await prismaClient.ingredient.findUnique({
       where: {
-        id: ingredientId
-      }
+        id: ingredientId,
+      },
     });
 
     if (!ingredientExists) {
@@ -85,8 +88,8 @@ class IngredientsService {
 
     const ingredientExists = await prismaClient.ingredient.findUnique({
       where: {
-        id: ingredientId
-      }
+        id: ingredientId,
+      },
     });
 
     if (!ingredientExists) {
@@ -95,8 +98,8 @@ class IngredientsService {
 
     await prismaClient.ingredient.delete({
       where: {
-        id: ingredientId
-      }
+        id: ingredientId,
+      },
     });
   }
 }

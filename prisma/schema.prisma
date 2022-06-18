@@ -48,7 +48,7 @@ model Feedback {
   userId    Int      @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
   productId Int      @map("product_id")
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   create_at DateTime @default(now())
   update_at DateTime @default(now())
 
@@ -59,7 +59,7 @@ model Brand {
   id        Int     @id @default(autoincrement())
   name      String
   productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   create_at DateTime @default(now())
   update_at DateTime @default(now())

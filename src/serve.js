@@ -4,7 +4,7 @@ import { router } from "./routes/router.js";
 import { ExceptionHandler } from "./middlewars/ExceptionHandler.js";
 
 const app = express();
-const port = 3333;
+const port = process.env.PORT || 3333;
 app.use(express.json());
 app.use(router);
 app.use(ExceptionHandler);
