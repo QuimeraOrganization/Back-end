@@ -2,6 +2,7 @@ import { Router } from "express";
 import { userRoutes } from "./userRoutes.js";
 import { productRoutes } from "./productRoutes.js";
 import { feedbackRoutes } from "./feedbackRoutes.js";
+import { ingredientsRoutes} from "./ingredientsRoutes.js";
 import { tokenRoutes } from "./tokenRoutes.js";
 import { brandRoutes } from "./brandRoutes.js";
 
