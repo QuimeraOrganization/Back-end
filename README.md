@@ -1,5 +1,3 @@
-# back-end
-
 <h1> Back-end Quimera </h1>
 
 <h2>Sobre</h2>
