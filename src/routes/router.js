@@ -6,7 +6,10 @@ import { ingredientsRoutes } from "./ingredientsRoutes.js";
 import { tokenRoutes } from "./tokenRoutes.js";
 import { brandRoutes } from "./brandRoutes.js";
 import { categoryRoutes } from "./categoryRoutes.js";
-
+import swaggerUI from "swagger-ui-express";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url); // construct the require method
+const swaggerDocument = require("../../swagger.json");
 const router = Router();
 
 router.use("/users", userRoutes);
@@ -18,6 +21,9 @@ router.use("/categories", categoryRoutes);
 
 //TOKEN ROUTES
 router.use("/token", tokenRoutes);
+
+//SWAGGER ROUTES
+router.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 /*
 rota para lougout, destruir o token.

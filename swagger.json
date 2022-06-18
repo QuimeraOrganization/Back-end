@@ -1,0 +1,763 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API Quimera",
+    "description": "API desenvolvida pelo o grupo Quimera, no programa Atlantico Bootcamp",
+    "contact": {
+      "email": "linnykereros@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "API de test"
+    },
+    {
+      "url": "http://**********",
+      "description": "API de produção ainda a definir"
+    }
+  ],
+  "basePath": "/",
+  "components": {
+    "schemas": {
+      "Users": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password_hash": {
+            "type": "string"
+          },
+          "permission": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "DateTime"
+          },
+          "update_at": {
+            "type": "DateTime"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "DateTime"
+          },
+          "update_at": {
+            "type": "DateTime"
+          }
+        }
+      },
+      "Feedback": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "contents": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "integer"
+          },
+          "productId": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "DateTime"
+          },
+          "update_at": {
+            "type": "DateTime"
+          }
+        }
+      },
+      "Brand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "productId": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "DateTime"
+          },
+          "update_at": {
+            "type": "DateTime"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/token": {
+      "post": {
+        "summary": "Criando token para autenticação do Usuário",
+        "description": "Essa rota é responsável pela criação do Token para o Usuário conseguir se autenticar",
+        "tags": ["Token"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pedro_oliverira@gmail.com",
+                  "password": "13456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Token gerado com sucesso!"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "summary": "Cadastro de Usuários!",
+        "description": "Essa rota é responsável pela criação de Usuários!",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pedro_oliverira@gmail.com",
+                  "password": "13456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "This User already exist!"
+          },
+          "201": {
+            "description": "Usuário cadastrado com sucesso!"
+          }
+        }
+      },
+      "get": {
+        "summary": "Busca por todos os Usuários!",
+        "description": "Essa rota é responsável por buscar todos os Usuários cadastrados no banco!",
+        "tags": ["Users"],
+
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Busca de Usuários pelo ID!",
+        "description": "Essa rota é responsável por buscar Usuário pelo ID!",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          },
+          "500": {
+            "description": "Erro interno!"
+          }
+        }
+      },
+      "put": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Atualização de Usuário!",
+        "description": "Essa rota é responsável pela atualização do Usuário!",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pedro_oliverira@gmail.com",
+                  "password": "13456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "404": {
+            "description": "Usuário não encontrado."
+          },
+          "500": {
+            "description": "Email deste usuário está invalido!"
+          },
+          "200": {
+            "description": "Usuário atualizado com sucesso!"
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Deleta um Usuário!",
+        "description": "Essa rota é responsável por deletar um Usuário!",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário deletado com sucesso!"
+          },
+          "500": {
+            "description": "Erro interno!"
+          }
+        }
+      }
+    },
+    "/products": {
+      "post": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Cadastro de Produto!",
+        "description": "Essa rota é responsável pela criação de Produtos!",
+        "tags": ["Products"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "name": "macarrão",
+                  "description": "teste",
+                  "image": "teste",
+                  "verified": false,
+                  "userId": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produto cadastrado com sucesso!"
+          },
+          "400": {
+            "description": "Verifique se os campos necessários e as atribuições no exemplo estão corretas e tente novamente!"
+          }
+        }
+      },
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Busca por todos os Produtos!",
+        "description": "Essa rota é responsável por buscar todos os Produtos cadastrados no banco!",
+        "tags": ["Products"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Busca de Produtos pelo ID!",
+        "description": "Essa rota é responsável pela busca de Produto pelo ID!",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Produto não encontrado!"
+          },
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualização de Produto!",
+        "description": "Essa rota é responsável pela atualização do Produto!",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "name": "macarrão",
+                  "description": "funcionou uhuu",
+                  "image": "teste",
+                  "verified": false,
+                  "userId": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Solicitação Inválida!"
+          },
+          "200": {
+            "description": "Product updated successfully!"
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Deleta um Produto!",
+        "description": "Essa rota é responsável por deletar um Produto!",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto deletado com sucesso!"
+          }
+        }
+      }
+    },
+    "/feedbacks": {
+      "post": {
+        "summary": "Cadastro de Feedback!",
+        "description": "Essa rota é responsável pela criação de Feedbacks!",
+        "tags": ["Feedbacks"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contents": {
+                    "type": "string"
+                  },
+                  "productId": {
+                    "type": "integer"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "contents": "Esse produto contém açúcar",
+                  "productId": 1,
+                  "userId": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Verifique se os campos necessários e as atribuições no exemplo estão corretas e tente novamente!"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Busca por todos os Feedbacks!",
+        "description": "Essa rota é responsável por buscar todos os Feedbacks cadastrados no banco!",
+        "tags": ["Feedbacks"],
+
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/feedbacks/{id}": {
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Busca de Feedbacks pelo ID!",
+        "description": "Essa rota é responsável por buscar Feedback pelo ID!",
+        "tags": ["Feedbacks"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Feedback não encontrado!"
+          }
+        }
+      },
+      "put": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Atualização de Feedbacks!",
+        "description": "Essa rota é responsável pela atualização dos Feedbacks!",
+        "tags": ["Feedbacks"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contents": {
+                    "type": "string"
+                  },
+                  "productId": {
+                    "type": "integer"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "contents": "Esse produto não açúcar",
+                  "productId": 1,
+                  "userId": 2
+                }
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "500": {
+            "description": "Erro interno!"
+          },
+          "200": {
+            "description": "Feedback atualizado com sucesso!"
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Deleta um Feedback!",
+        "description": "Essa rota é responsável por deletar um Feedback!",
+        "tags": ["Feedbacks"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Erro interno!"
+          },
+          "200": {
+            "description": "Feedback deletado com sucesso!"
+          }
+        }
+      }
+    },
+    "/brands": {
+      "post": {
+        "summary": "Cadastro de Marca!",
+        "description": "Essa rota é responsável pela criação de Marcas!",
+        "tags": ["Brands"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "productId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "name": "Coca-cola",
+                  "productId": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Verifique se os campos necessários e as atribuições no exemplo estão corretas e tente novamente!"
+          },
+          "201": {
+            "description": "Marca cadastrada com sucesso!"
+          }
+        }
+      },
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Busca por todos as Marcas!",
+        "description": "Essa rota é responsável por buscar todos as Marcas cadastrados no banco!",
+        "tags": ["Brands"],
+
+        "responses": {
+          "500": {
+            "description": "Erro interno!"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/brands/{id}": {
+      "get": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Busca de Marcas pelo ID!",
+        "description": "Essa rota é responsável por buscar a Marca pelo ID!",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Erro interno!"
+          },
+          "404": {
+            "description": "Marca não encontrada."
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Atualização de Marcas!",
+        "description": "Essa rota é responsável pela atualização de Marcas!",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "productId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "name": "Coca-cola",
+                  "productId": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "500": {
+            "description": "Erro interno!"
+          },
+          "404": {
+            "description": "Marca não encontrada."
+          },
+          "200": {
+            "description": "Marca atualizada com sucesso!"
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "bearerAuth": [] }],
+        "summary": "Deleta uma Marca!",
+        "description": "Essa rota é responsável por deletar uma Marca!",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Erro interno!"
+          },
+          "200": {
+            "description": "Marca deletada com sucesso!"
+          }
+        }
+      }
+    }
+  }
+}
