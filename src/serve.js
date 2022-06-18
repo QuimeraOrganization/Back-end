@@ -1,4 +1,5 @@
 import express from "express";
+import "express-async-errors";
 import { router } from "./routes/router.js";
 import { ExceptionHandler } from "./middlewars/ExceptionHandler.js";
 
