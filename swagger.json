@@ -10,12 +10,12 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3333",
-      "description": "API de test"
+      "url": "https://quimera-backend.herokuapp.com/",
+      "description": "API de produção"
     },
     {
-      "url": "http://**********",
-      "description": "API de produção ainda a definir"
+      "url": "http://localhost:3333",
+      "description": "API de test"
     }
   ],
   "basePath": "/",

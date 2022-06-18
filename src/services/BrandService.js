@@ -1,6 +1,6 @@
 import { prismaClient } from "../database/prismaClient.js";
 import { AppException } from "../exceptions/AppException.js";
-
+import jwt from "jsonwebtoken";
 class BrandService {
   async createBrand(name, productId) {
     const brand = await prismaClient.brand.create({
@@ -21,8 +21,8 @@ class BrandService {
       select: {
         id: true,
         name: true,
-        create_at: true,
-        update_at: true,
+        created_at: true,
+        updated_at: true,
         product: {
           select: {
             id: true,
@@ -47,8 +47,8 @@ class BrandService {
       select: {
         id: true,
         name: true,
-        create_at: true,
-        update_at: true,
+        created_at: true,
+        updated_at: true,
         product: {
           select: {
             id: true,
@@ -62,6 +62,13 @@ class BrandService {
   }
 
   async updateBrand(id, name, productId) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
+
     let brand = prismaClient.brand.findUnique({
       where: {
         id: Number(id),
@@ -79,8 +86,8 @@ class BrandService {
       select: {
         id: true,
         name: true,
-        create_at: true,
-        update_at: true,
+        created_at: true,
+        updated_at: true,
         product: {
           select: {
             id: true,
@@ -98,6 +105,12 @@ class BrandService {
   }
 
   async deleteBranch(id) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
     const brand = await prismaClient.brand.findUnique({
       where: {
         id: Number(id),
@@ -113,6 +126,22 @@ class BrandService {
         id: Number(id),
       },
     });
+  }
+
+  validationPermission(idRequest, authorization) {
+    const [, token] = authorization.split(" ");
+    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const { id, permission } = data;
+
+    if (permission === "USER" || permission === "BRAND") {
+      if (id == idRequest) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (permission === "ADMIN") {
+      return true;
+    }
   }
 }
 

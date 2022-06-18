@@ -1,4 +1,3 @@
-import { prismaClient } from "../database/prismaClient.js";
 import { feedbackService } from "../services/FeedbackService.js";
 
 export class FeedbackController {
@@ -28,12 +27,14 @@ export class FeedbackController {
   async updateFeedback(req, res) {
     const { id } = req.params;
     const { contents, userId, productId } = req.body;
+    const { authorization } = req.headers;
 
     const feedback = await feedbackService.updateFeedbacks(
       id,
       contents,
       userId,
-      productId
+      productId,
+      authorization
     );
     return res
       .status(200)
@@ -42,7 +43,8 @@ export class FeedbackController {
 
   async deleteFeedback(req, res) {
     const { id } = req.params;
-    await feedbackService.deleteFeedback(id);
+    const { authorization } = req.headers;
+    await feedbackService.deleteFeedback(id, authorization);
     return res.status(200).send("Feedback deletado com sucesso!");
   }
 }

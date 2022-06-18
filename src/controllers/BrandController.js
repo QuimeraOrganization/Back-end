@@ -25,16 +25,22 @@ export class BrandController {
   async updateBrand(req, res) {
     const { id } = req.params;
     const { name, productId } = req.body;
+    const { authorization } = req.headers;
 
-    const brand = await brandService.updateBrand(id, name, productId);
+    const brand = await brandService.updateBrand(
+      id,
+      name,
+      productId,
+      authorization
+    );
 
     return res.status(200).json(brand);
   }
 
   async deleteBrand(req, res) {
     const { id } = req.params;
-
-    await brandService.deleteBranch(id);
+    const { authorization } = req.headers;
+    await brandService.deleteBranch(id, authorization);
 
     return res.status(204).send();
   }

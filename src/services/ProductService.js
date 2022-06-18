@@ -1,6 +1,6 @@
 import { prismaClient } from "../database/prismaClient.js";
 import { AppException } from "../exceptions/AppException.js";
-
+import jwt from "jsonwebtoken";
 class ProductService {
   async save(productDTO) {
     const entity = await prismaClient.product.create({
@@ -27,8 +27,14 @@ class ProductService {
     return product;
   }
 
-  async update(id, productDTO) {
+  async update(id, productDTO, authorization) {
     // Verifica se existe o produto com o id informado
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
     let entity = await prismaClient.product.findUnique({
       where: {
         id: Number(id),
@@ -49,6 +55,12 @@ class ProductService {
     return entity;
   }
   async delete(id) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
     const entity = await prismaClient.product.findUnique({
       where: {
         id: Number(id),
@@ -64,6 +76,25 @@ class ProductService {
         id: Number(id),
       },
     });
+  }
+  validationPermission(productId, authorization) {
+    const [, token] = authorization.split(" ");
+    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const { id, permission } = data;
+    const product = prismaClient.product.findUnique({
+      where: {
+        id: Number(productId),
+      },
+    });
+    if (permission === "USER") {
+      if (id == product.userId) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (permission === "ADMIN") {
+      return true;
+    }
   }
 }
 

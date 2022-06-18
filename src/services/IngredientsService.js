@@ -1,6 +1,6 @@
 import { prismaClient } from "../database/prismaClient.js";
 import { AppException } from "../exceptions/AppException.js";
-
+import jwt from "jsonwebtoken";
 class IngredientsService {
   async save(name) {
     const ingredientAlreadyExists = await prismaClient.ingredient.findFirst({
@@ -23,6 +23,12 @@ class IngredientsService {
   }
 
   async update(id, name) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
     const ingredientId = parseInt(id);
 
     const ingredientExists = await prismaClient.ingredient.findUnique({
@@ -84,6 +90,12 @@ class IngredientsService {
   }
 
   async delete(id) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
     const ingredientId = parseInt(id);
 
     const ingredientExists = await prismaClient.ingredient.findUnique({
@@ -101,6 +113,15 @@ class IngredientsService {
         id: ingredientId,
       },
     });
+  }
+  validationPermission(idRequest, authorization) {
+    const [, token] = authorization.split(" ");
+    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const { id, permission } = data;
+
+    if (permission === "ADMIN") {
+      return true;
+    }
   }
 }
 

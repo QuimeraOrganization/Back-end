@@ -48,7 +48,7 @@ class UserService {
         email: true,
         permission: true,
         created_at: true,
-        update_at: true,
+        updated_at: true,
       },
     });
     //caso não exista nenhum user com o respectivo ID, retorno um erro.
@@ -69,16 +69,18 @@ class UserService {
         email: true,
         permission: true,
         created_at: true,
-        update_at: true,
+        updated_at: true,
       },
     });
     return users;
   }
 
   async updateUser(id, email, password, permission, authorization) {
-
     if (!this.validationPermission(id, authorization)) {
-      throw new AppException("Acesso permitido somente à administradores!", 401);
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
     }
 
     //caso o user esqueça o email ou senha
@@ -105,7 +107,7 @@ class UserService {
         email: true,
         permission: true,
         created_at: true,
-        update_at: true,
+        updated_at: true,
       },
       data: {
         email,
@@ -118,7 +120,10 @@ class UserService {
 
   async deleteUser(id, authorization) {
     if (!this.validationPermission(id, authorization)) {
-      throw new AppException("Acesso permitido somente à administradores!", 401);
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
     }
 
     const user = await prismaClient.user.findUnique({

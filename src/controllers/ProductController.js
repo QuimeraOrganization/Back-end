@@ -1,4 +1,3 @@
-import { prismaClient } from "../database/prismaClient.js";
 import { productService } from "../services/ProductService.js";
 
 export class ProductController {
@@ -25,16 +24,16 @@ export class ProductController {
   async update(req, res) {
     const { id } = req.params;
     const productDTO = req.body;
-
-    const entity = await productService.update(id, productDTO);
+    const { authorization } = req.headers;
+    const entity = await productService.update(id, productDTO, authorization);
 
     return res.status(200).json(entity);
   }
 
   async delete(req, res) {
     const { id } = req.params;
-
-    await productService.delete(id);
+    const { authorization } = req.headers;
+    await productService.delete(id, authorization);
 
     return res.status(204).send({ message: "Produto deletado com sucesso!" });
   }

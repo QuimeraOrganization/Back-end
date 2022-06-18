@@ -18,7 +18,7 @@ model Product {
   verified    Boolean    @default(false)
   userId      Int        @map("user_id")
   created_at  DateTime   @default(now())
-  update_at   DateTime   @default(now())
+  updated_at   DateTime   @default(now())
   feedbacks   Feedback[]
   brand       Brand[]
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -41,7 +41,7 @@ model User {
   password_hash String     @default("")
   permission    Permission @default(USER)
   created_at    DateTime   @default(now())
-  update_at     DateTime   @default(now())
+  updated_at     DateTime   @default(now())
   feedback      Feedback[]
   products      Product[]
 
@@ -55,8 +55,8 @@ model Feedback {
   user      User     @relation(fields: [userId], references: [id])
   productId Int      @map("product_id")
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   @@map("feedbacks")
 }
@@ -67,8 +67,8 @@ model Brand {
   productId Int     @map("product_id")
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   @@map("brand")
 }
@@ -77,8 +77,8 @@ model Ingredient {
   id   Int    @id @default(autoincrement())
   name String
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   IngredientsOnProducts IngredientsOnProducts[]
   @@map("ingredients")
@@ -91,16 +91,16 @@ model IngredientsOnProducts {
   productId    Int        @map("product_id")
   product      Product    @relation(fields: [productId], references: [id])
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }
 
 model Category {
   id   Int    @id @default(autoincrement())
   name String
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   CategoriesOnProducts CategoriesOnProducts[]
   @@map("categories")
@@ -109,10 +109,10 @@ model Category {
 model CategoriesOnProducts {
   id         Int      @id @default(autoincrement())
   categoryId Int      @map("category_id")
-  ingredient Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
   productId  Int      @map("product_id")
   product    Product  @relation(fields: [productId], references: [id])
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }
