@@ -11,17 +11,19 @@ datasource db {
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   image       String?
-  verified    Boolean    @default(false)
-  userId      Int        @map("user_id")
-  created_at  DateTime   @default(now())
-  updated_at   DateTime   @default(now())
-  feedbacks   Feedback[]
-  brand       Brand[]
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verified    Boolean  @default(false)
+  userId      Int      @map("user_id")
+  brandId     Int      @map("brand_id")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
+
+  feedbacks Feedback[]
+  brand     Brand      @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   IngredientsOnProducts IngredientsOnProducts[]
   CategoriesOnProducts  CategoriesOnProducts[]
@@ -41,7 +43,7 @@ model User {
   password_hash String     @default("")
   permission    Permission @default(USER)
   created_at    DateTime   @default(now())
-  updated_at     DateTime   @default(now())
+  updated_at    DateTime   @default(now())
   feedback      Feedback[]
   products      Product[]
 
@@ -49,12 +51,12 @@ model User {
 }
 
 model Feedback {
-  id        Int      @id @default(autoincrement())
-  contents  String
-  userId    Int      @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  productId Int      @map("product_id")
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  contents   String
+  userId     Int      @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  productId  Int      @map("product_id")
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
@@ -62,10 +64,9 @@ model Feedback {
 }
 
 model Brand {
-  id        Int     @id @default(autoincrement())
-  name      String
-  productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id      Int       @id @default(autoincrement())
+  name    String
+  product Product[]
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
