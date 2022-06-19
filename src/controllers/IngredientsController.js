@@ -1,42 +1,42 @@
 import { ingredientsService } from "../services/IngredientsService.js";
 
 export class IngredientsController {
-  async save(request, response) {
-    const { name } = request.body;
+  async save(req, res) {
+    const { name } = req.body;
 
     const ingredient = await ingredientsService.save(name);
 
-    response.status(201).json(ingredient);
+    res.status(201).json(ingredient);
   }
 
-  async update(request, response) {
-    const { name } = request.body;
-    const { id } = request.params;
+  async update(req, res) {
+    const { name } = req.body;
+    const { id } = req.params;
+    const { authorization } = req.headers;
 
-    const ingredient = await ingredientsService.update(id, name);
+    const ingredient = await ingredientsService.update(id, name, authorization);
 
-    response.status(200).json(ingredient);
+    res.status(200).json(ingredient);
   }
 
-  async findById(request, response) {
-    const { id } = request.params;
+  async findById(req, res) {
+    const { id } = req.params;
 
     const ingredient = await ingredientsService.findById(id);
-    ingredientsService
-    response.status(200).json(ingredient);
+    ingredientsService;
+    res.status(200).json(ingredient);
   }
 
-  async findAll(request, response) {
+  async findAll(req, res) {
     const ingredients = await ingredientsService.findAll();
-
-    response.status(200).json(ingredients);
+    res.status(200).json(ingredients);
   }
 
-  async delete(request, response) {
-    const { id } = request.params;
+  async delete(req, res) {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    await ingredientsService.delete(id, authorization);
 
-    await ingredientsService.delete(id);
-
-    response.status(204).send();
+    res.status(204).send();
   }
 }

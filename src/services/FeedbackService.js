@@ -1,6 +1,6 @@
 import { prismaClient } from "../database/prismaClient.js";
 import { AppException } from "../exceptions/AppException.js";
-
+import jwt from "jsonwebtoken";
 class FeedbackService {
   async createFeedback(contents, productId, userId) {
     if (!contents || !productId || !userId) {
@@ -13,8 +13,8 @@ class FeedbackService {
       select: {
         id: true,
         contents: true,
-        create_at: true,
-        update_at: true,
+        created_at: true,
+        updated_at: true,
         product: {
           select: {
             id: true,
@@ -45,8 +45,8 @@ class FeedbackService {
       select: {
         id: true,
         contents: true,
-        create_at: true,
-        update_at: true,
+        created_at: true,
+        updated_at: true,
         product: {
           select: {
             id: true,
@@ -76,8 +76,8 @@ class FeedbackService {
       select: {
         id: true,
         contents: true,
-        create_at: true,
-        update_at: true,
+        created_at: true,
+        updated_at: true,
         product: {
           select: {
             id: true,
@@ -95,7 +95,13 @@ class FeedbackService {
     return feedbacks;
   }
 
-  async updateFeedbacks(id, contents, userId, productId) {
+  async updateFeedbacks(id, contents, userId, productId, authorization) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
     let feedback = prismaClient.feedback.findUnique({
       where: {
         id: Number(id),
@@ -120,6 +126,12 @@ class FeedbackService {
   }
 
   async deleteFeedback(id) {
+    if (!this.validationPermission(id, authorization)) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
     const feedback = await prismaClient.feedback.findUnique({
       where: {
         id: Number(id),
@@ -135,6 +147,26 @@ class FeedbackService {
       },
     });
     return feedback;
+  }
+
+  validationPermission(feedbackId, authorization) {
+    const [, token] = authorization.split(" ");
+    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const { id, permission } = data;
+    const feedback = prismaClient.feedback.findUnique({
+      where: {
+        id: Number(feedbackId),
+      },
+    });
+    if (permission === "USER") {
+      if (id == feedback.userId) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (permission === "ADMIN") {
+      return true;
+    }
   }
 }
 

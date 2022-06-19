@@ -11,17 +11,19 @@ datasource db {
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   image       String?
-  verified    Boolean    @default(false)
-  userId      Int        @map("user_id")
-  created_at  DateTime   @default(now())
-  update_at   DateTime   @default(now())
-  feedbacks   Feedback[]
-  brand       Brand[]
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verified    Boolean  @default(false)
+  userId      Int      @map("user_id")
+  brandId     Int      @map("brand_id")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
+
+  feedbacks Feedback[]
+  brand     Brand      @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   IngredientsOnProducts IngredientsOnProducts[]
   CategoriesOnProducts  CategoriesOnProducts[]
@@ -41,7 +43,7 @@ model User {
   password_hash String     @default("")
   permission    Permission @default(USER)
   created_at    DateTime   @default(now())
-  update_at     DateTime   @default(now())
+  updated_at    DateTime   @default(now())
   feedback      Feedback[]
   products      Product[]
 
@@ -49,26 +51,25 @@ model User {
 }
 
 model Feedback {
-  id        Int      @id @default(autoincrement())
-  contents  String
-  userId    Int      @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  productId Int      @map("product_id")
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  contents   String
+  userId     Int      @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  productId  Int      @map("product_id")
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   @@map("feedbacks")
 }
 
 model Brand {
-  id        Int     @id @default(autoincrement())
-  name      String
-  productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id      Int       @id @default(autoincrement())
+  name    String
+  product Product[]
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   @@map("brand")
 }
@@ -77,8 +78,8 @@ model Ingredient {
   id   Int    @id @default(autoincrement())
   name String
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   IngredientsOnProducts IngredientsOnProducts[]
   @@map("ingredients")
@@ -91,16 +92,16 @@ model IngredientsOnProducts {
   productId    Int        @map("product_id")
   product      Product    @relation(fields: [productId], references: [id])
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }
 
 model Category {
   id   Int    @id @default(autoincrement())
   name String
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
   CategoriesOnProducts CategoriesOnProducts[]
   @@map("categories")
@@ -109,10 +110,10 @@ model Category {
 model CategoriesOnProducts {
   id         Int      @id @default(autoincrement())
   categoryId Int      @map("category_id")
-  ingredient Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
   productId  Int      @map("product_id")
   product    Product  @relation(fields: [productId], references: [id])
 
-  create_at DateTime @default(now())
-  update_at DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }

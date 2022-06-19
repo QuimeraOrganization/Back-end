@@ -6,6 +6,7 @@ import { ExceptionHandler } from "./middlewars/ExceptionHandler.js";
 const app = express();
 const port = process.env.PORT || 3333;
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(router);
 app.use(ExceptionHandler);
 

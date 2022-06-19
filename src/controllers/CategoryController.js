@@ -1,42 +1,43 @@
 import { categoriesService } from "../services/CategoriesService.js";
 
 export class CategoryController {
-  async save(request, response) {
-    const { name } = request.body;
+  async save(req, res) {
+    const { name } = req.body;
 
     const category = await categoriesService.save(name);
 
-    response.status(201).json(category);
+    res.status(201).json(category);
   }
 
-  async update(request, response) {
-    const { name } = request.body;
-    const { id } = request.params;
+  async update(req, res) {
+    const { name } = req.body;
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    const category = await categoriesService.update(id, name, authorization);
 
-    const category = await categoriesService.update(id, name);
-
-    response.status(200).json(category);
+    res.status(200).json(category);
   }
 
-  async findById(request, response) {
-    const { id } = request.params;
+  async findById(req, res) {
+    const { id } = req.params;
 
     const category = await categoriesService.findById(id);
 
-    response.status(200).json(category);
+    res.status(200).json(category);
   }
 
-  async findAll(request, response) {
+  async findAll(req, res) {
     const categories = await categoriesService.findAll();
 
-    response.status(200).json(categories);
+    res.status(200).json(categories);
   }
 
-  async delete(request, response) {
-    const { id } = request.params;
+  async delete(req, res) {
+    const { id } = req.params;
+    const { authorization } = req.headers;
 
-    await categoriesService.delete(id);
+    await categoriesService.delete(id, authorization);
 
-    response.status(204).send();
+    res.status(204).send();
   }
 }
