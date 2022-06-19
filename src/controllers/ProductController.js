@@ -2,9 +2,10 @@ import { productService } from "../services/ProductService.js";
 
 export class ProductController {
   async save(req, res) {
-    const productDTO = req.body;
-    const entity = await productService.save(productDTO);
-    // Verificar se existe produto com o mesmo nome na mesma marca
+    const productDTO = JSON.parse(req.body.product);
+    const image = req.file;
+
+    const entity = await productService.save(productDTO, image);
 
     return res.status(201).json(entity);
   }
@@ -23,9 +24,12 @@ export class ProductController {
 
   async update(req, res) {
     const { id } = req.params;
-    const productDTO = req.body;
     const { authorization } = req.headers;
-    const entity = await productService.update(id, productDTO, authorization);
+
+    const productDTO = JSON.parse(req.body.product);
+    const image = req.file;
+
+    const entity = await productService.update(id, productDTO, image, authorization);
 
     return res.status(200).json(entity);
   }
