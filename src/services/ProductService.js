@@ -8,6 +8,19 @@ import { AppException } from "../exceptions/AppException.js";
 class ProductService {
   async save(productDTO, image) {
 
+    const products = await prismaClient.product.findMany({
+      where: {
+        name: productDTO.name
+      }
+    });
+
+    //Verifica se tem produto com essa mesma marca cadastrado com o mesmo nome
+    products.forEach((product) => {
+      if (product.brandId === productDTO.brandId) {
+        throw new AppException("Produto já cadastrado com esse nome", 400);
+      }
+    });
+
     let entity = await prismaClient.product.create({
       data: productDTO,
     });
@@ -38,14 +51,12 @@ class ProductService {
   }
 
   async update(id, productDTO, image, authorization) {
-    // Verifica se existe o produto com o id informado
+    // Verifica se o usuário logado tem permissão para editar o produto
     if (!this.validationPermission(id, authorization)) {
-      throw new AppException(
-        "Acesso permitido somente à administradores!",
-        401
-      );
+      throw new AppException("Acesso permitido somente à administradores!", 401);
     }
 
+    // Verifica se existe o produto com o id informado
     let entity = await prismaClient.product.findUnique({
       where: {
         id: Number(id),
@@ -55,6 +66,21 @@ class ProductService {
     if (!entity) {
       throw new AppException("Produto não encontrado!", 404);
     }
+
+    //Verifica se tem produto com essa mesma marca cadastrado com o mesmo nome
+    const products = await prismaClient.product.findMany({
+      where: {
+        name: productDTO.name
+      }
+    });
+
+    products.forEach((product) => {
+      if (product.brandId === productDTO.brandId) {
+        if (product.id != id) {
+          throw new AppException("Produto já cadastrado com esse nome", 400);
+        }
+      }
+    });
 
     // Atualiza a entidade
     entity = await prismaClient.product.update({
