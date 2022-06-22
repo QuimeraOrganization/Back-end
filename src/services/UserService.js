@@ -25,7 +25,7 @@ class UserService {
         email: true,
         permission: true,
         created_at: true,
-        update_at: true,
+        updated_at: true,
       },
       data: {
         email,
