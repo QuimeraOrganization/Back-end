@@ -1,4 +1,4 @@
-import { ref, uploadBytes, deleteObject } from "firebase/storage";
+import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage";
 import jwt from "jsonwebtoken";
 
 import { storage } from "../database/firebase.js";
@@ -34,6 +34,12 @@ class ProductService {
 
   async findAll() {
     const products = await prismaClient.product.findMany();
+
+    // Adiciona o link de download da imagem
+    for (let product of products) {
+      await this.getDownloadURL(product);
+    };
+
     return products;
   }
 
@@ -47,6 +53,10 @@ class ProductService {
     if (!product) {
       throw new AppException("Produto não encontrado!", 404);
     }
+
+    // Adiciona o link de download da imagem
+    await this.getDownloadURL(product);
+
     return product;
   }
 
@@ -168,6 +178,14 @@ class ProductService {
     }).catch(err => {
       throw new AppException(err.message, 500);
     });
+  }
+
+  async getDownloadURL(entity) {
+    const storageRef = ref(storage, entity.image);
+
+    await getDownloadURL(storageRef).then((url) => {
+      entity.image = url;
+    })
   }
 }
 
