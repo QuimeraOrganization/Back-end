@@ -4,7 +4,10 @@ import { TokenController } from "../controllers/tokenController/TokenController.
 const tokenRoutes = Router();
 const tokenController = new TokenController();
 
-//POST
-tokenRoutes.post("/", tokenController.handle);
+tokenRoutes.post("/", tokenController.handle
+  /* 
+    #swagger.tags = ['Authentication']
+  */
+);
 
 export { tokenRoutes };

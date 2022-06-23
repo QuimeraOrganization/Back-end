@@ -8,26 +8,34 @@ import { validateRequest } from "../validators/RequestValidator.js";
 import { postIngredientsValidator } from "../validators/ingredients/postIngredientsValidator.js";
 import { putIngredientsValidator } from "../validators/ingredients/putIngredientsValidator.js";
 
-//GET
-ingredientsRoutes.get("/", ingredientsController.findAll);
-ingredientsRoutes.get("/:id", ingredientsController.findById);
-
-//POST
-ingredientsRoutes.post(
-  "/",
-  validateRequest(postIngredientsValidator),
-  ingredientsController.save
+ingredientsRoutes.post("/", validateRequest(postIngredientsValidator), ingredientsController.save
+  /* 
+    #swagger.tags = ['Ingredients']
+  */
 );
 
-//PUT
-ingredientsRoutes.put(
-  "/:id",
-  loginRequired,
-  validateRequest(putIngredientsValidator),
-  ingredientsController.update
+ingredientsRoutes.get("/", ingredientsController.findAll
+  /* 
+    #swagger.tags = ['Ingredients']
+  */
 );
 
-//DELETE
-ingredientsRoutes.delete("/:id", loginRequired, ingredientsController.delete);
+ingredientsRoutes.get("/:id", ingredientsController.findById
+  /* 
+    #swagger.tags = ['Ingredients']
+  */
+);
+
+ingredientsRoutes.put("/:id", loginRequired, validateRequest(putIngredientsValidator), ingredientsController.update
+  /* 
+    #swagger.tags = ['Ingredients']
+  */
+);
+
+ingredientsRoutes.delete("/:id", loginRequired, ingredientsController.delete
+  /* 
+    #swagger.tags = ['Ingredients']
+  */
+);
 
 export { ingredientsRoutes };

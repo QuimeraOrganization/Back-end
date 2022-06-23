@@ -7,32 +7,66 @@ const usersController = new UsersController();
 import { validateRequest } from "../validators/RequestValidator.js";
 import { postUserValidator } from "../validators/users/postUserValidator.js";
 import { putUserValidator } from "../validators/users/putUserValidator.js";
-//POST
-userRoutes.post(
-  "/",
-  validateRequest(postUserValidator),
-  usersController.createUser
+
+userRoutes.post("/", validateRequest(postUserValidator), usersController.createUser
+  /* 
+    #swagger.tags = ['Users']
+    #swagger.open = false
+  */
 );
 
-//GET
-userRoutes.get("/", usersController.findAllUsers);
-userRoutes.get("/:id", loginRequired, usersController.findUser);
+userRoutes.get("/", usersController.findAllUsers
+  /* 
+    #swagger.tags = ['Users']
 
-//UPDATE
-userRoutes.put(
-  "/:id",
-  loginRequired,
-  adminRequired,
-  validateRequest(putUserValidator),
-  usersController.updateUser
+    #swagger.security = [{
+      "bearerAuth": []
+    }]
+
+    #swagger.responses[200] = {
+      description: "Busca todos os usuários",
+      content:{
+        "application/json": {
+          example: [
+            {
+              "id": 1,
+              email: "email@gmail.com",
+              permission: "USER",
+              created_at: "2022-06-18T14:04:38.614Z",
+              updated_at: "2022-06-19T01:57:29.794Z"
+            },
+            {
+              "id": 2,
+              email: "email2@gmail.com",
+              permission: "USER",
+              created_at: "2022-06-18T14:04:38.614Z",
+              updated_at: "2022-06-19T01:57:29.794Z"
+            }
+        ]
+        }
+      }
+        
+    } 
+
+  */
 );
 
-//DELETE
-userRoutes.delete(
-  "/:id",
-  loginRequired,
-  adminRequired,
-  usersController.deleteUser
+userRoutes.get("/:id", loginRequired, usersController.findUser
+  /* 
+    #swagger.tags = ['Users']
+  */
+);
+
+userRoutes.put("/:id", loginRequired, adminRequired, validateRequest(putUserValidator), usersController.updateUser
+  /* 
+    #swagger.tags = ['Users']
+  */
+);
+
+userRoutes.delete("/:id", loginRequired, adminRequired, usersController.deleteUser
+  /* 
+    #swagger.tags = ['Users']
+  */
 );
 
 export { userRoutes };

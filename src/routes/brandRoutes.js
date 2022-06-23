@@ -4,17 +4,34 @@ import loginRequired from "../middlewars/loginRequired.js";
 const brandRoutes = Router();
 const brandsController = new BrandController();
 
-//POST
-brandRoutes.post("/", brandsController.createBrand);
+brandRoutes.post("/", brandsController.createBrand
+  /* 
+    #swagger.tags = ['Brands']
+  */
+);
 
-//GET
-brandRoutes.get("/", loginRequired, brandsController.findAllBrands);
-brandRoutes.get("/:id", loginRequired, brandsController.findBrand);
+brandRoutes.get("/", loginRequired, brandsController.findAllBrands
+  /* 
+    #swagger.tags = ['Brands']
+  */
+);
 
-//UPDATE
-brandRoutes.put("/:id", loginRequired, brandsController.updateBrand);
+brandRoutes.get("/:id", loginRequired, brandsController.findBrand
+  /* 
+    #swagger.tags = ['Brands']
+  */
+);
 
-//DELETE
-brandRoutes.delete("/:id", loginRequired, brandsController.deleteBrand);
+brandRoutes.put("/:id", loginRequired, brandsController.updateBrand
+  /* 
+    #swagger.tags = ['Brands']
+  */
+);
+
+brandRoutes.delete("/:id", loginRequired, brandsController.deleteBrand
+  /* 
+    #swagger.tags = ['Brands']
+  */
+);
 
 export { brandRoutes };

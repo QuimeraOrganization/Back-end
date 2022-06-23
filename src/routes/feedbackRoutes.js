@@ -7,30 +7,34 @@ import { validateRequest } from "../validators/RequestValidator.js";
 import { postFeedbackValidator } from "../validators/feedbacks/postFeedbackValidator.js";
 import { putFeedbackValidator } from "../validators/feedbacks/putFeedbackValidator.js";
 
-//POST
-feedbackRoutes.post(
-  "/",
-  validateRequest(postFeedbackValidator),
-  feedbacksController.createFeedback
+feedbackRoutes.post("/", validateRequest(postFeedbackValidator), feedbacksController.createFeedback
+  /* 
+    #swagger.tags = ['Feedbacks']
+  */
 );
 
-//GET
-feedbackRoutes.get("/", loginRequired, feedbacksController.findAllFeedbacks);
-feedbackRoutes.get("/:id", loginRequired, feedbacksController.findFeedback);
-
-//UPDATE
-feedbackRoutes.put(
-  "/:id",
-  loginRequired,
-  validateRequest(putFeedbackValidator),
-  feedbacksController.updateFeedback
+feedbackRoutes.get("/", loginRequired, feedbacksController.findAllFeedbacks
+  /* 
+    #swagger.tags = ['Feedbacks']
+  */
 );
 
-//DELETE
-feedbackRoutes.delete(
-  "/:id",
-  loginRequired,
-  feedbacksController.deleteFeedback
+feedbackRoutes.get("/:id", loginRequired, feedbacksController.findFeedback
+  /* 
+    #swagger.tags = ['Feedbacks']
+  */
+);
+
+feedbackRoutes.put("/:id", loginRequired, validateRequest(putFeedbackValidator), feedbacksController.updateFeedback
+  /* 
+    #swagger.tags = ['Feedbacks']
+  */
+);
+
+feedbackRoutes.delete("/:id", loginRequired, feedbacksController.deleteFeedback
+  /* 
+    #swagger.tags = ['Feedbacks']
+  */
 );
 
 export { feedbackRoutes };

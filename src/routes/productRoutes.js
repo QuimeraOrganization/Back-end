@@ -12,20 +12,36 @@ const Multer = multer({
   storage: multer.memoryStorage()
 });
 
-//POST
 // productRoutes.post("/", validateRequest(postProductValidator), productsController.save);
-productRoutes.post("/", Multer.single("image"), productsController.save);
+productRoutes.post("/", Multer.single("image"), productsController.save
+  /* 
+    #swagger.tags = ['Products']
+  */
+);
 
+productRoutes.get("/", loginRequired, productsController.findAll
+  /* 
+    #swagger.tags = ['Products']
+  */
+);
 
-//GET
-productRoutes.get("/", loginRequired, productsController.findAll);
-productRoutes.get("/:id", loginRequired, productsController.findById);
+productRoutes.get("/:id", loginRequired, productsController.findById
+  /* 
+    #swagger.tags = ['Products']
+  */
+);
 
-//UPDATE
 // productRoutes.put("/:id", loginRequired, validateRequest(putProductValidator), productsController.update);
-productRoutes.put("/:id", loginRequired, Multer.single("image"), productsController.update);
+productRoutes.put("/:id", loginRequired, Multer.single("image"), productsController.update
+  /* 
+    #swagger.tags = ['Products']
+  */
+);
 
-//DELETE
-productRoutes.delete("/:id", loginRequired, productsController.delete);
+productRoutes.delete("/:id", loginRequired, productsController.delete
+  /* 
+    #swagger.tags = ['Products']
+  */
+);
 
 export { productRoutes };
