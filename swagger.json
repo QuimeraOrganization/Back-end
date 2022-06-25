@@ -16,9 +16,39 @@
         "tags": [
           "Authentication"
         ],
-        "description": "",
+        "summary": "Criando token para autenticação do Usuário!",
+        "description": "Essa rota é responsável pela criação do Token para o Usuário conseguir se autenticar!",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "Token gerado com sucesso!"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pedro_oliverira@gmail.com",
+                  "password": "13456"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users/": {
@@ -26,15 +56,49 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Cadastro de Usuários!",
+        "description": "Essa rota é responsável pela criação de Usuários!",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso!"
+          },
+          "400": {
+            "description": "Esse Usuário já existe!"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pedro_oliverira@gmail.com",
+                  "password": "13456"
+                }
+              }
+            }
+          }
+        }
       },
       "get": {
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Busca por todos os Usuários!",
+        "description": "Essa rota é responsável por buscar todos os Usuários cadastrados no banco!",
         "parameters": [],
         "responses": {
           "200": {
@@ -73,7 +137,8 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Busca de Usuários pelo ID!",
+        "description": "Essa rota é responsável por buscar Usuário pelo ID!",
         "parameters": [
           {
             "name": "id",
@@ -92,16 +157,51 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Busca de Usuários pelo ID!",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "email": "email@gmail.com",
+                    "permission": "USER",
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  },
+                  {
+                    "id": 2,
+                    "email": "email2@gmail.com",
+                    "permission": "USER",
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  }
+                ]
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          },
+          "500": {
+            "description": "Erro interno!"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Atualização de Usuário!",
+        "description": "Essa rota é responsável pela atualização do Usuário!",
         "parameters": [
           {
             "name": "id",
@@ -120,8 +220,46 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso!"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          },
+          "500": {
+            "description": "Email deste usuário está invalido!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pedro_oliverira@gmail.com",
+                  "password": "13456"
+                }
+              }
+            }
           }
         }
       },
@@ -129,7 +267,8 @@
         "tags": [
           "Users"
         ],
-        "description": "",
+        "summary": "Deleta um Usuário!",
+        "description": "Essa rota é responsável por deletar um Usuário!",
         "parameters": [
           {
             "name": "id",
@@ -148,10 +287,21 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Usuário deletado com sucesso!"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Erro interno!"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/products/": {
@@ -159,15 +309,8 @@
         "tags": [
           "Products"
         ],
-        "description": "",
-        "parameters": [],
-        "responses": {}
-      },
-      "get": {
-        "tags": [
-          "Products"
-        ],
-        "description": "",
+        "summary": "Cadastro de Produto!",
+        "description": "Essa rota é responsável pela criação de Produtos!",
         "parameters": [
           {
             "name": "authorization",
@@ -178,10 +321,87 @@
           }
         ],
         "responses": {
+          "201": {
+            "description": "Produto cadastrado com sucesso!"
+          },
+          "400": {
+            "description": "Verifique se os campos necessários e as atribuições no exemplo estão corretas e tente novamente!"
+          },
           "401": {
             "description": "Unauthorized"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "name": "macarrão",
+                  "description": "teste",
+                  "image": "teste",
+                  "verified": false,
+                  "userId": 1
+                }
+              }
+            }
+          }
         }
+      },
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Busca por todos os Produtos!",
+        "description": "Essa rota é responsável por buscar todos os Produtos cadastrados no banco!",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Busca por todos os Produtos!",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "name": "macarrão",
+                    "description": "gostoso",
+                    "image": "teste",
+                    "verified": false,
+                    "userId": 1
+                  },
+                  {
+                    "name": "cuscuz",
+                    "description": "flocão",
+                    "image": "teste",
+                    "verified": false,
+                    "userId": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/products/{id}": {
@@ -189,7 +409,8 @@
         "tags": [
           "Products"
         ],
-        "description": "",
+        "summary": "Busca de Produtos pelo ID!",
+        "description": "Essa rota é responsável pela busca de Produto pelo ID!",
         "parameters": [
           {
             "name": "id",
@@ -198,26 +419,51 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
-          "401": {
-            "description": "Unauthorized"
+          "200": {
+            "description": "Busca de Produtos pelo ID!",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "name": "macarrão",
+                    "description": "gostoso",
+                    "image": "teste",
+                    "verified": false,
+                    "userId": 1
+                  },
+                  {
+                    "name": "cuscuz",
+                    "description": "flocão",
+                    "image": "teste",
+                    "verified": false,
+                    "userId": 1
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "404": {
+            "description": "Produto não encontrado!"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
           "Products"
         ],
-        "description": "",
+        "summary": "Atualização de Produto!",
+        "description": "Essa rota é responsável pela atualização do Produto!",
         "parameters": [
           {
             "name": "id",
@@ -236,8 +482,52 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Produto atualizado com sucesso!"
+          },
+          "400": {
+            "description": "Solicitação Inválida!"
+          },
           "401": {
             "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "name": "macarrão",
+                  "description": "funcionou uhuu",
+                  "image": "teste",
+                  "verified": false,
+                  "userId": 1
+                }
+              }
+            }
           }
         }
       },
@@ -245,7 +535,8 @@
         "tags": [
           "Products"
         ],
-        "description": "",
+        "summary": "Deleta um Produto!",
+        "description": "Essa rota é responsável por deletar um Produto!",
         "parameters": [
           {
             "name": "id",
@@ -264,10 +555,18 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Produto deletado com sucesso!"
+          },
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/feedbacks/": {
@@ -275,15 +574,50 @@
         "tags": [
           "Feedbacks"
         ],
-        "description": "",
+        "summary": "Cadastro de Feedbacks!",
+        "description": "Essa rota é responsável pelo cadastro de Feedbacks!",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "Feedback cadastrado com sucesso!"
+          },
+          "400": {
+            "description": "Verifique se os campos necessários e as atribuições no exemplo estão corretas e tente novamente!"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contents": {
+                    "type": "string"
+                  },
+                  "productId": {
+                    "type": "integer"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "contents": "Esse produto contém açúcar",
+                  "productId": 1,
+                  "userId": 2
+                }
+              }
+            }
+          }
+        }
       },
       "get": {
         "tags": [
           "Feedbacks"
         ],
-        "description": "",
+        "summary": "Busca por todos os Feedbacks!",
+        "description": "Essa rota é responsável por buscar todos os Feedbacks cadastrados no banco!",
         "parameters": [
           {
             "name": "authorization",
@@ -294,6 +628,22 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Busca todos os usuários",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "contents": "Esse produto contém açúcar",
+                    "productId": 1,
+                    "userId": 2,
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  }
+                ]
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
           }
@@ -305,7 +655,8 @@
         "tags": [
           "Feedbacks"
         ],
-        "description": "",
+        "summary": "Busca de Feedbacks pelo ID!",
+        "description": "Essa rota é responsável por buscar Feedback pelo ID!",
         "parameters": [
           {
             "name": "id",
@@ -324,6 +675,22 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Busca de Feedbacks pelo ID!",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "contents": "Esse produto contém açúcar",
+                    "productId": 1,
+                    "userId": 2,
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  }
+                ]
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
           }
@@ -333,7 +700,8 @@
         "tags": [
           "Feedbacks"
         ],
-        "description": "",
+        "summary": "Atualização de Feedback!",
+        "description": "Essa rota é responsável pela atualização do Feedback!",
         "parameters": [
           {
             "name": "id",
@@ -352,8 +720,48 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Feedback atualizado com sucesso!"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Feedback não encontrado!"
+          },
+          "500": {
+            "description": "Erro interno!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contents": {
+                    "type": "string"
+                  },
+                  "productId": {
+                    "type": "integer"
+                  },
+                  "userId": {
+                    "type": "integer"
+                  }
+                },
+                "example": {
+                  "contents": "Esse produto contém açúcar",
+                  "productId": 1,
+                  "userId": 2
+                }
+              }
+            }
           }
         }
       },
@@ -361,7 +769,8 @@
         "tags": [
           "Feedbacks"
         ],
-        "description": "",
+        "summary": "Deleta um Feedback!",
+        "description": "Essa rota é responsável por deletar um Feedback!",
         "parameters": [
           {
             "name": "id",
@@ -380,10 +789,24 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Feedback deletado com sucesso!"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Feedback não encontrado!"
+          },
+          "500": {
+            "description": "Erro interno!"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/brands/": {
@@ -507,17 +930,66 @@
         "tags": [
           "Ingredients"
         ],
-        "description": "",
+        "summary": "Cadastro de Ingrediente!",
+        "description": "Essa rota é responsável pelo cadastro de Ingredientes!",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "Ingrediente cadastrado com sucesso!"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Oléo de soja"
+                }
+              }
+            }
+          }
+        }
       },
       "get": {
         "tags": [
           "Ingredients"
         ],
-        "description": "",
+        "summary": "Busca por todos os Ingredientes!",
+        "description": "Essa rota é responsável por buscar todos os Ingredientes cadastrados no banco!",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "Busca por todos os Ingredientes!",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "name": "Feijão",
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  },
+                  {
+                    "name": "leite de cabra",
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/ingredients/{id}": {
@@ -525,7 +997,8 @@
         "tags": [
           "Ingredients"
         ],
-        "description": "",
+        "summary": "Busca de Ingredientes pelo ID!",
+        "description": "Essa rota é responsável por buscar Ingrediente pelo ID!",
         "parameters": [
           {
             "name": "id",
@@ -536,13 +1009,45 @@
             }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "Busca por todos os Ingredientes!",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "name": "Feijão",
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  },
+                  {
+                    "name": "leite de cabra",
+                    "created_at": "2022-06-18T14:04:38.614Z",
+                    "updated_at": "2022-06-19T01:57:29.794Z"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "Ingrediente não encontrado."
+          },
+          "500": {
+            "description": "Erro interno!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
           "Ingredients"
         ],
-        "description": "",
+        "summary": "Atualização de Ingredientes!",
+        "description": "Essa rota é responsável pela atualização do Ingrediente!",
         "parameters": [
           {
             "name": "id",
@@ -561,8 +1066,40 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Ingrediente atualizado com sucesso!"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Ingrediente não encontrado."
+          },
+          "500": {
+            "description": "Erro interno!"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Oléo de soja"
+                }
+              }
+            }
           }
         }
       },
@@ -570,7 +1107,8 @@
         "tags": [
           "Ingredients"
         ],
-        "description": "",
+        "summary": "Deletar um Ingrediente!",
+        "description": "Essa rota é responsável por deletar um Ingrediente!",
         "parameters": [
           {
             "name": "id",
@@ -589,10 +1127,24 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Ingrediente deletado com sucesso!"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Ingrediente não encontrado!"
+          },
+          "500": {
+            "description": "Erro interno!"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/categories/": {
