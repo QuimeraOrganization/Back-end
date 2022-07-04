@@ -32,15 +32,29 @@ class ProductService {
     return entity;
   }
 
-  async findAll() {
-    const products = await prismaClient.product.findMany();
+  async findAll(size, page, skip) {
+    const [products, totalProducts] = await Promise.all([
+      prismaClient.product.findMany({
+        skip: skip,
+        take: size
+      }),
+      prismaClient.product.count()
+    ]);
 
     // Adiciona o link de download da imagem
     for (let product of products) {
       await this.getDownloadURL(product);
     };
 
-    return products;
+    const productsPage = {
+      data: products,
+      page: page,
+      size: size,
+      totalPages: parseInt(Math.ceil(totalProducts / size)),
+      totalRecords: totalProducts
+    }
+
+    return productsPage;
   }
 
   async findById(id) {
