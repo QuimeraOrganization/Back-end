@@ -32,11 +32,11 @@ class ProductService {
     return entity;
   }
 
-  async findAll(size, page, skip) {
+  async findAll(limit, page, skip) {
     const [products, totalProducts] = await Promise.all([
       prismaClient.product.findMany({
         skip: skip,
-        take: size
+        take: limit
       }),
       prismaClient.product.count()
     ]);
@@ -49,8 +49,8 @@ class ProductService {
     const productsPage = {
       data: products,
       page: page,
-      size: size,
-      totalPages: parseInt(Math.ceil(totalProducts / size)),
+      limit: limit,
+      totalPages: parseInt(Math.ceil(totalProducts / limit)),
       totalRecords: totalProducts
     }
 

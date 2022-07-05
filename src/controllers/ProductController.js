@@ -11,11 +11,11 @@ export class ProductController {
   }
 
   async findAll(req, res) {
-    const size = req.query.size;
+    const limit = req.query.limit;
     const page = req.query.page;
     const skip = req.skip;
 
-    const products = await productService.findAll(size, page, skip);
+    const products = await productService.findAll(limit, page, skip);
     return res.status(200).json(products);
   }
 
