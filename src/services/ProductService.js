@@ -5,7 +5,17 @@ import { storage } from "../database/firebase.js";
 import { prismaClient } from "../database/prismaClient.js";
 import { AppException } from "../exceptions/AppException.js";
 
+const includeResponseGet = {
+  brand: true,
+  CategoriesOnProducts: {
+    include: {
+      category: true,
+    }
+  }
+}
+
 class ProductService {
+
   async save(productDTO, image) {
 
     const products = await prismaClient.product.findMany({
@@ -21,8 +31,25 @@ class ProductService {
       }
     });
 
+    console.log(productDTO)
+
     let entity = await prismaClient.product.create({
-      data: productDTO,
+      data: {
+        name: productDTO.name,
+        description: productDTO.description,
+        brandId: productDTO.brandId,
+        userId: productDTO.userId,
+
+        CategoriesOnProducts: {
+          create: productDTO.categories?.map(categoryId => ({
+            category: {
+              connect: {
+                id: categoryId
+              }
+            }
+          }))
+        }
+      }
     });
 
     if (image != null) {
@@ -36,7 +63,8 @@ class ProductService {
     const [products, totalProducts] = await Promise.all([
       prismaClient.product.findMany({
         skip: skip,
-        take: limit
+        take: limit,
+        include: includeResponseGet
       }),
       prismaClient.product.count()
     ]);
@@ -62,6 +90,7 @@ class ProductService {
       where: {
         id: Number(id),
       },
+      include: includeResponseGet
     });
 
     if (!product) {
@@ -176,6 +205,8 @@ class ProductService {
       entity.image = snapshot.metadata.fullPath;
     });
 
+    console.log(entity)
+
     entity = await prismaClient.product.update({
       where: {
         id: Number(entity.id)
@@ -195,11 +226,13 @@ class ProductService {
   }
 
   async getDownloadURL(entity) {
-    const storageRef = ref(storage, entity.image);
+    if (entity.image) {
+      const storageRef = ref(storage, entity.image);
 
-    await getDownloadURL(storageRef).then((url) => {
-      entity.image = url;
-    })
+      await getDownloadURL(storageRef).then((url) => {
+        entity.image = url;
+      })
+    }
   }
 }
 
