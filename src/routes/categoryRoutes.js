@@ -43,7 +43,6 @@ categoryRoutes.post(
 
 categoryRoutes.get(
   "/",
-  loginRequired,
   categoryController.findAll
   /* 
     #swagger.summary = "Busca por todas as Categorias!"
@@ -74,7 +73,6 @@ categoryRoutes.get(
 
 categoryRoutes.get(
   "/:id",
-  loginRequired,
   categoryController.findById
   /* 
       #swagger.summary = "Busca de Categorias pelo ID!"
