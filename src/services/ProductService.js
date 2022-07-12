@@ -11,6 +11,11 @@ const includeResponseGet = {
     include: {
       category: true,
     }
+  },
+  IngredientsOnProducts: {
+    include: {
+      ingredient: true,
+    }
   }
 }
 
@@ -31,8 +36,6 @@ class ProductService {
       }
     });
 
-    console.log(productDTO)
-
     let entity = await prismaClient.product.create({
       data: {
         name: productDTO.name,
@@ -45,6 +48,15 @@ class ProductService {
             category: {
               connect: {
                 id: categoryId
+              }
+            }
+          }))
+        },
+        IngredientsOnProducts: {
+          create: productDTO.ingredients?.map(ingredientId => ({
+            ingredient: {
+              connect: {
+                id: ingredientId
               }
             }
           }))
