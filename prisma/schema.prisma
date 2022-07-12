@@ -54,7 +54,7 @@ model Feedback {
   id         Int      @id @default(autoincrement())
   contents   String
   userId     Int      @map("user_id")
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId  Int      @map("product_id")
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
