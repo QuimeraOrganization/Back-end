@@ -44,7 +44,7 @@ brandRoutes.post(
 
 brandRoutes.get(
   "/",
-  loginRequired,
+
   brandsController.findAllBrands
   /* 
     #swagger.summary = "Busca por todas as Marcas!"

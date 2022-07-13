@@ -2,11 +2,10 @@ import { prismaClient } from "../database/prismaClient.js";
 import { AppException } from "../exceptions/AppException.js";
 import jwt from "jsonwebtoken";
 class BrandService {
-  async createBrand(name, productId) {
+  async createBrand(name) {
     const brand = await prismaClient.brand.create({
       data: {
         name,
-        productId,
       },
     });
 
@@ -61,7 +60,7 @@ class BrandService {
     return brands;
   }
 
-  async updateBrand(id, name, productId) {
+  async updateBrand(id, name, authorization) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",
@@ -97,14 +96,13 @@ class BrandService {
       },
       data: {
         name,
-        productId,
       },
     });
 
     return brand;
   }
 
-  async deleteBranch(id) {
+  async deleteBrand(id, authorization) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",
