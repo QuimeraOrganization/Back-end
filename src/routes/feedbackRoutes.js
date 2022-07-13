@@ -52,7 +52,6 @@ feedbackRoutes.post(
 
 feedbackRoutes.get(
   "/",
-  loginRequired,
   feedbacksController.findAllFeedbacks
   /* 
     #swagger.summary = "Busca por todos os Feedbacks!"
