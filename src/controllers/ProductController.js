@@ -18,6 +18,10 @@ export class ProductController {
     const products = await productService.findAll(limit, page, skip);
     return res.status(200).json(products);
   }
+  async findAllProducts(req, res) {
+    const products = await productService.findAllProducts();
+    return res.status(200).json(products);
+  }
 
   async findById(req, res) {
     const { id } = req.params;
@@ -33,7 +37,12 @@ export class ProductController {
     const productDTO = JSON.parse(req.body.product);
     const image = req.file;
 
-    const entity = await productService.update(id, productDTO, image, authorization);
+    const entity = await productService.update(
+      id,
+      productDTO,
+      image,
+      authorization
+    );
 
     return res.status(200).json(entity);
   }

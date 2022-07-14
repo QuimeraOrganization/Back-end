@@ -1,4 +1,9 @@
-import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  deleteObject,
+  getDownloadURL,
+} from "firebase/storage";
 import jwt from "jsonwebtoken";
 
 import { storage } from "../database/firebase.js";
@@ -10,23 +15,21 @@ const includeResponseGet = {
   CategoriesOnProducts: {
     include: {
       category: true,
-    }
+    },
   },
   IngredientsOnProducts: {
     include: {
       ingredient: true,
-    }
-  }
-}
+    },
+  },
+};
 
 class ProductService {
-
   async save(productDTO, image) {
-
     const products = await prismaClient.product.findMany({
       where: {
-        name: productDTO.name
-      }
+        name: productDTO.name,
+      },
     });
 
     //Verifica se tem produto com essa mesma marca cadastrado com o mesmo nome
@@ -44,24 +47,24 @@ class ProductService {
         userId: productDTO.userId,
 
         CategoriesOnProducts: {
-          create: productDTO.categories?.map(categoryId => ({
+          create: productDTO.categories?.map((categoryId) => ({
             category: {
               connect: {
-                id: categoryId
-              }
-            }
-          }))
+                id: categoryId,
+              },
+            },
+          })),
         },
         IngredientsOnProducts: {
-          create: productDTO.ingredients?.map(ingredientId => ({
+          create: productDTO.ingredients?.map((ingredientId) => ({
             ingredient: {
               connect: {
-                id: ingredientId
-              }
-            }
-          }))
-        }
-      }
+                id: ingredientId,
+              },
+            },
+          })),
+        },
+      },
     });
 
     if (image != null) {
@@ -76,25 +79,51 @@ class ProductService {
       prismaClient.product.findMany({
         skip: skip,
         take: limit,
-        include: includeResponseGet
+        include: includeResponseGet,
       }),
-      prismaClient.product.count()
+      prismaClient.product.count(),
     ]);
 
     // Adiciona o link de download da imagem
     for (let product of products) {
       await this.getDownloadURL(product);
-    };
+    }
 
     const productsPage = {
       data: products,
       page: page,
       limit: limit,
       totalPages: parseInt(Math.ceil(totalProducts / limit)),
-      totalRecords: totalProducts
-    }
+      totalRecords: totalProducts,
+    };
 
     return productsPage;
+  }
+
+  async findAllProducts() {
+    const products = await prismaClient.product.findMany({
+      orderBy: {
+        id: "desc",
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
+        brand: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    return products;
   }
 
   async findById(id) {
@@ -102,7 +131,10 @@ class ProductService {
       where: {
         id: Number(id),
       },
-      include: includeResponseGet
+
+      include: {
+        includeResponseGet,
+      },
     });
 
     if (!product) {
@@ -118,7 +150,10 @@ class ProductService {
   async update(id, productDTO, image, authorization) {
     // Verifica se o usuário logado tem permissão para editar o produto
     if (!this.validationPermission(id, authorization)) {
-      throw new AppException("Acesso permitido somente à administradores!", 401);
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
     }
 
     // Verifica se existe o produto com o id informado
@@ -135,8 +170,8 @@ class ProductService {
     //Verifica se tem produto com essa mesma marca cadastrado com o mesmo nome
     const products = await prismaClient.product.findMany({
       where: {
-        name: productDTO.name
-      }
+        name: productDTO.name,
+      },
     });
 
     products.forEach((product) => {
@@ -164,7 +199,10 @@ class ProductService {
 
   async delete(id, authorization) {
     if (!this.validationPermission(id, authorization)) {
-      throw new AppException("Acesso permitido somente à administradores!", 401);
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
     }
 
     const entity = await prismaClient.product.findUnique({
@@ -209,32 +247,37 @@ class ProductService {
   }
 
   async uploadImage(entity, image) {
-    const fileExtension = image.originalname.split('.')[1];
-    const storageRef = ref(storage, `products/${entity.id}/image.${fileExtension}`);
+    const fileExtension = image.originalname.split(".")[1];
+    const storageRef = ref(
+      storage,
+      `products/${entity.id}/image.${fileExtension}`
+    );
 
-    await uploadBytes(storageRef, image.buffer).then(snapshot => {
+    await uploadBytes(storageRef, image.buffer).then((snapshot) => {
       // Adiciona o path da imagem na entidade produto
       entity.image = snapshot.metadata.fullPath;
     });
 
-    console.log(entity)
+    console.log(entity);
 
     entity = await prismaClient.product.update({
       where: {
-        id: Number(entity.id)
+        id: Number(entity.id),
       },
-      data: entity
+      data: entity,
     });
   }
 
   async deleteImage(entity) {
     const storageRef = ref(storage, entity.image);
 
-    await deleteObject(storageRef).then(() => {
-      entity.image = null;
-    }).catch(err => {
-      throw new AppException(err.message, 500);
-    });
+    await deleteObject(storageRef)
+      .then(() => {
+        entity.image = null;
+      })
+      .catch((err) => {
+        throw new AppException(err.message, 500);
+      });
   }
 
   async getDownloadURL(entity) {
@@ -243,7 +286,7 @@ class ProductService {
 
       await getDownloadURL(storageRef).then((url) => {
         entity.image = url;
-      })
+      });
     }
   }
 }

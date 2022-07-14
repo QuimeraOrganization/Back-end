@@ -65,6 +65,45 @@ productRoutes.post(
 
   */
 );
+productRoutes.get(
+  "/all",
+  productsController.findAllProducts
+  /* 
+     #swagger.security = [{
+      "bearerAuth": []
+    }]
+    #swagger.summary = "Busca por todos os Produtos!"
+   #swagger.description = "Essa rota é responsável por buscar todos os Produtos cadastrados no banco!"
+   #swagger.tags = ['Products']
+
+  
+    #swagger.responses[200] = {
+      description: "Busca por todos os Produtos!",
+      content:{
+        "application/json": {
+          example: [
+            {
+            "name": "macarrão",
+                  "description": "gostoso",
+                  "image": "teste",
+                  "verified": false,
+                  "userId": 1
+            },
+            {
+             "name": "cuscuz",
+             "description": "flocão",
+             "image": "teste",
+             "verified": false,
+             "userId": 1
+            }
+        ]
+        }
+      }
+        
+    } 
+
+  */
+);
 
 productRoutes.get(
   "/",
