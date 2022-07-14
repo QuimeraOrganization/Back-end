@@ -7,6 +7,13 @@ import { AppException } from "../exceptions/AppException.js";
 
 const includeResponseGet = {
   brand: true,
+  user: {
+    select: {
+      id: true,
+      email: true,
+      permission: true,
+    }
+  },
   CategoriesOnProducts: {
     include: {
       category: true,
