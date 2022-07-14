@@ -17,7 +17,7 @@ const includeResponseGet = {
       id: true,
       email: true,
       permission: true,
-    }
+    },
   },
   CategoriesOnProducts: {
     include: {
@@ -139,9 +139,7 @@ class ProductService {
         id: Number(id),
       },
 
-      include: {
-        includeResponseGet,
-      },
+      include: includeResponseGet,
     });
 
     if (!product) {
@@ -276,15 +274,17 @@ class ProductService {
   }
 
   async deleteImage(entity) {
-    const storageRef = ref(storage, entity.image);
+    if (!entity) {
+      const storageRef = ref(storage, entity.image);
 
-    await deleteObject(storageRef)
-      .then(() => {
-        entity.image = null;
-      })
-      .catch((err) => {
-        throw new AppException(err.message, 500);
-      });
+      await deleteObject(storageRef)
+        .then(() => {
+          entity.image = null;
+        })
+        .catch((err) => {
+          throw new AppException(err.message, 500);
+        });
+    }
   }
 
   async getDownloadURL(entity) {

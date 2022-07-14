@@ -78,9 +78,9 @@ model Brand {
 }
 
 model Ingredient {
-  id   Int    @id @default(autoincrement())
-  name String
-
+  id       Int    @id @default(autoincrement())
+  name     String
+  allergic Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
@@ -91,9 +91,9 @@ model Ingredient {
 model IngredientsOnProducts {
   id           Int        @id @default(autoincrement())
   ingredientId Int        @map("ingredient_id")
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
   productId    Int        @map("product_id")
-  product      Product    @relation(fields: [productId], references: [id])
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -113,9 +113,9 @@ model Category {
 model CategoriesOnProducts {
   id         Int      @id @default(autoincrement())
   categoryId Int      @map("category_id")
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   productId  Int      @map("product_id")
-  product    Product  @relation(fields: [productId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
