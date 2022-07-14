@@ -125,7 +125,7 @@ class FeedbackService {
     return feedback;
   }
 
-  async deleteFeedback(id) {
+  async deleteFeedback(id, authorization) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",

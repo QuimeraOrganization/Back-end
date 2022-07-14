@@ -42,11 +42,14 @@ model User {
   email         String     @unique @default("")
   password_hash String     @default("")
   permission    Permission @default(USER)
+  brandId       Int?        @map("brand_id")
   created_at    DateTime   @default(now())
   updated_at    DateTime   @default(now())
   feedback      Feedback[]
   products      Product[]
-
+  brand         Brand?      @relation(fields: [brandId], references: [id], onDelete: Cascade)
+ 
+  
   @@map("user")
 }
 
@@ -67,7 +70,7 @@ model Brand {
   id      Int       @id @default(autoincrement())
   name    String
   product Product[]
-
+  user    User[]
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 

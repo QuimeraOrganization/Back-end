@@ -49,6 +49,47 @@ userRoutes.post(
     }
   */
 );
+userRoutes.post(
+  "/provider",
+  validateRequest(postUserValidator),
+  usersController.createProvider
+  /* 
+    #swagger.summary = "Cadastro de Usuários!"
+    #swagger.description = "Essa rota é responsável pela criação de Usuários!"
+    #swagger.tags = ['Users']
+    #swagger.requestBody = {
+      required: true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pedro_oliverira@gmail.com",
+                  "password": "13456"
+                }
+              }
+            }
+          }
+    }
+    #swagger.responses[201] = {
+       "description": "Usuário cadastrado com sucesso!",
+    }
+    #swagger.responses[400] = {
+      "description": "Esse Usuário já existe!"
+    }
+  */
+);
 
 userRoutes.get(
   "/",
