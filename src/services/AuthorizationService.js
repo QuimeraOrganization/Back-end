@@ -24,12 +24,12 @@ class AuthorizationService {
     };
 
     if (!(await passwordIsValid(password))) {
-      throw new AppException("Usuário ou Senha inválidos!", 401)
+      throw new AppException("Usuário ou Senha inválidos!", 401);
     }
 
-    const { id, permission } = user;
+    const { id, permission, brandId } = user;
     const token = jwt.sign(
-      { id, email, permission },
+      { id, email, permission, brandId },
       process.env.TOKEN_SECRET,
       {
         expiresIn: process.env.TOKEN_EXPIRATION,

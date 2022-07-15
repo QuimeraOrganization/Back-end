@@ -26,6 +26,7 @@ class BrandService {
           select: {
             id: true,
             name: true,
+            description: true,
           },
         },
       },

@@ -49,8 +49,19 @@ model User {
   products      Product[]
   brand         Brand?      @relation(fields: [brandId], references: [id], onDelete: Cascade)
  
-  
+  IngredientsOnUsersAllergic    IngredientsOnUsersAllergic[]
   @@map("user")
+}
+
+model IngredientsOnUsersAllergic {
+  id            Int         @id @default(autoincrement())
+  ingredientId  Int         @map("ingredient_id")
+  ingredient    Ingredient  @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  userId        Int         @map("user_id")
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }
 
 model Feedback {
@@ -80,11 +91,11 @@ model Brand {
 model Ingredient {
   id       Int    @id @default(autoincrement())
   name     String
-  allergic Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  IngredientsOnProducts IngredientsOnProducts[]
+  IngredientsOnProducts         IngredientsOnProducts[]
+  IngredientsOnUsersAllergic    IngredientsOnUsersAllergic[]
   @@map("ingredients")
 }
 

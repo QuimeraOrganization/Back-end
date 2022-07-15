@@ -203,7 +203,7 @@ class ProductService {
   }
 
   async delete(id, authorization) {
-    if (!this.validationPermission(id, authorization)) {
+    if (!(await this.validationPermission(id, authorization))) {
       throw new AppException(
         "Acesso permitido somente à administradores!",
         401
@@ -231,15 +231,16 @@ class ProductService {
     });
   }
 
-  validationPermission(productId, authorization) {
+  async validationPermission(productId, authorization) {
     const [, token] = authorization.split(" ");
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
-    const { id, permission } = data;
-    const product = prismaClient.product.findUnique({
+    const { id, permission, brandId } = data;
+    const product = await prismaClient.product.findUnique({
       where: {
         id: Number(productId),
       },
     });
+
     if (permission === "USER") {
       if (id == product.userId) {
         return true;
@@ -248,6 +249,13 @@ class ProductService {
       }
     } else if (permission === "ADMIN") {
       return true;
+    }
+    if (permission === "BRAND") {
+      if (brandId == product.brandId) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
