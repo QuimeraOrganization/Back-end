@@ -29,6 +29,11 @@ const includeResponseGet = {
       ingredient: true,
     },
   },
+  feedbacks: {
+    include: {
+      user: true
+    }
+  }
 };
 
 class ProductService {
