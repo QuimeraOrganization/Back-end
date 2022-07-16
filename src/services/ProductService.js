@@ -187,12 +187,48 @@ class ProductService {
       }
     });
 
+    await prismaClient.categoriesOnProducts.deleteMany({
+      where: {
+        productId: entity.id
+      }
+    });
+
+    await prismaClient.ingredientsOnProducts.deleteMany({
+      where: {
+        productId: entity.id
+      }
+    });
+
     // Atualiza a entidade
     entity = await prismaClient.product.update({
       where: {
         id: Number(id),
       },
-      data: productDTO,
+      data: {
+        name: productDTO.name,
+        description: productDTO.description,
+        brandId: productDTO.brandId,
+        userId: productDTO.userId,
+
+        CategoriesOnProducts: {
+          create: productDTO.categories?.map((categoryId) => ({
+            category: {
+              connect: {
+                id: categoryId,
+              },
+            },
+          })),
+        },
+        IngredientsOnProducts: {
+          create: productDTO.ingredients?.map((ingredientId) => ({
+            ingredient: {
+              connect: {
+                id: ingredientId,
+              },
+            },
+          })),
+        },
+      },
     });
 
     if (image != null) {
