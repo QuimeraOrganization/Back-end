@@ -172,6 +172,13 @@ class UserService {
     if (!user) {
       throw new AppException("Usuário não encontrado!", 404);
     }
+
+    await prismaClient.IngredientsOnUsersAllergic.deleteMany({
+      where: {
+        userId: user.id,
+      }
+    })
+
     //update no banco pelo o id, enviando o data com o email e o password com hash
     user = await prismaClient.user.update({
       where: {
