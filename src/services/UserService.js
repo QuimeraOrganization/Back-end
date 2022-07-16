@@ -4,7 +4,7 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 class UserService {
-  async createUser(email, password, permission) {
+  async createUser(email, password, permission, ingredients) {
     if (!email || !password) {
       throw new AppException("Por favor, informe seu email e senha!", 401);
     }
@@ -33,12 +33,22 @@ class UserService {
         //aqui está sendo feito o hash da senha do user
         //onde passo no bcryptjs o password que recebi do body, e o segundo parametro é o salt(uma string aleatória)
         password_hash: await bcryptjs.hash(password, 8),
+
+        IngredientsOnUsersAllergic: {
+          create: ingredients?.map((ingredientId) => ({
+            ingredient: {
+              connect: {
+                id: ingredientId,
+              },
+            },
+          })),
+        },
       },
     });
     return user;
   }
 
-  async createProvider(email, password, permission = "BRAND") {
+  async createProvider(email, password, permission = "BRAND", brandId) {
     if (!email || !password) {
       throw new AppException("Por favor, informe seu email e senha!", 401);
     }
@@ -67,6 +77,7 @@ class UserService {
         //aqui está sendo feito o hash da senha do user
         //onde passo no bcryptjs o password que recebi do body, e o segundo parametro é o salt(uma string aleatória)
         password_hash: await bcryptjs.hash(password, 8),
+        brandId,
       },
     });
     return user;
@@ -86,6 +97,12 @@ class UserService {
           select: {
             id: true,
             name: true,
+          },
+        },
+        IngredientsOnUsersAllergic: {
+          select: {
+            id: true,
+            ingredient: true,
           },
         },
       },
@@ -115,12 +132,25 @@ class UserService {
             name: true,
           },
         },
+        IngredientsOnUsersAllergic: {
+          select: {
+            id: true,
+            ingredient: true,
+          },
+        },
       },
     });
     return users;
   }
 
-  async updateUser(id, email, password, permission, authorization) {
+  async updateUser(
+    id,
+    email,
+    password,
+    ingredients,
+    permission,
+    authorization
+  ) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",
@@ -158,6 +188,15 @@ class UserService {
         email,
         permission,
         password_hash: await bcryptjs.hash(password, 8),
+        IngredientsOnUsersAllergic: {
+          create: ingredients?.map((ingredientId) => ({
+            ingredient: {
+              connect: {
+                id: ingredientId,
+              },
+            },
+          })),
+        },
       },
     });
     return user;
