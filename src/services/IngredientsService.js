@@ -22,7 +22,7 @@ class IngredientsService {
     return ingredient;
   }
 
-  async update(id, name) {
+  async update(id, name, authorization) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",
@@ -89,7 +89,7 @@ class IngredientsService {
     return ingredients;
   }
 
-  async delete(id) {
+  async delete(id, authorization) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",

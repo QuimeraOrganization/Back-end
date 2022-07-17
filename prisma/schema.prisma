@@ -42,19 +42,33 @@ model User {
   email         String     @unique @default("")
   password_hash String     @default("")
   permission    Permission @default(USER)
+  brandId       Int?        @map("brand_id")
   created_at    DateTime   @default(now())
   updated_at    DateTime   @default(now())
   feedback      Feedback[]
   products      Product[]
-
+  brand         Brand?      @relation(fields: [brandId], references: [id], onDelete: Cascade)
+ 
+  IngredientsOnUsersAllergic    IngredientsOnUsersAllergic[]
   @@map("user")
+}
+
+model IngredientsOnUsersAllergic {
+  id            Int         @id @default(autoincrement())
+  ingredientId  Int         @map("ingredient_id")
+  ingredient    Ingredient  @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  userId        Int         @map("user_id")
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }
 
 model Feedback {
   id         Int      @id @default(autoincrement())
   contents   String
   userId     Int      @map("user_id")
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId  Int      @map("product_id")
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
@@ -67,7 +81,7 @@ model Brand {
   id      Int       @id @default(autoincrement())
   name    String
   product Product[]
-
+  user    User[]
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
@@ -75,22 +89,22 @@ model Brand {
 }
 
 model Ingredient {
-  id   Int    @id @default(autoincrement())
-  name String
-
+  id       Int    @id @default(autoincrement())
+  name     String
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  IngredientsOnProducts IngredientsOnProducts[]
+  IngredientsOnProducts         IngredientsOnProducts[]
+  IngredientsOnUsersAllergic    IngredientsOnUsersAllergic[]
   @@map("ingredients")
 }
 
 model IngredientsOnProducts {
   id           Int        @id @default(autoincrement())
   ingredientId Int        @map("ingredient_id")
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
   productId    Int        @map("product_id")
-  product      Product    @relation(fields: [productId], references: [id])
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -110,9 +124,9 @@ model Category {
 model CategoriesOnProducts {
   id         Int      @id @default(autoincrement())
   categoryId Int      @map("category_id")
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   productId  Int      @map("product_id")
-  product    Product  @relation(fields: [productId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())

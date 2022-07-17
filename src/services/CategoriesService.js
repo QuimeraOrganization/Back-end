@@ -92,7 +92,7 @@ class CategoriesService {
     return categories;
   }
 
-  async delete(id) {
+  async delete(id, authorization) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",

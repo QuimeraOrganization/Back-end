@@ -11,7 +11,17 @@ export class ProductController {
   }
 
   async findAll(req, res) {
-    const products = await productService.findAll();
+    const { contains_ingredients, no_contains_ingredients } = req.query;
+
+    const limit = req.query.limit;
+    const page = req.query.page;
+    const skip = req.skip;
+
+    const products = await productService.findAll(limit, page, skip, contains_ingredients, no_contains_ingredients);
+    return res.status(200).json(products);
+  }
+  async findAllProducts(req, res) {
+    const products = await productService.findAllProducts();
     return res.status(200).json(products);
   }
 
@@ -29,7 +39,12 @@ export class ProductController {
     const productDTO = JSON.parse(req.body.product);
     const image = req.file;
 
-    const entity = await productService.update(id, productDTO, image, authorization);
+    const entity = await productService.update(
+      id,
+      productDTO,
+      image,
+      authorization
+    );
 
     return res.status(200).json(entity);
   }

@@ -4,7 +4,7 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 class UserService {
-  async createUser(email, password, permission) {
+  async createUser(email, password, permission, ingredients) {
     if (!email || !password) {
       throw new AppException("Por favor, informe seu email e senha!", 401);
     }
@@ -25,7 +25,7 @@ class UserService {
         email: true,
         permission: true,
         created_at: true,
-        update_at: true,
+        updated_at: true,
       },
       data: {
         email,
@@ -33,11 +33,55 @@ class UserService {
         //aqui está sendo feito o hash da senha do user
         //onde passo no bcryptjs o password que recebi do body, e o segundo parametro é o salt(uma string aleatória)
         password_hash: await bcryptjs.hash(password, 8),
+
+        IngredientsOnUsersAllergic: {
+          create: ingredients?.map((ingredientId) => ({
+            ingredient: {
+              connect: {
+                id: ingredientId,
+              },
+            },
+          })),
+        },
       },
     });
     return user;
   }
 
+  async createProvider(email, password, permission = "BRAND", brandId) {
+    if (!email || !password) {
+      throw new AppException("Por favor, informe seu email e senha!", 401);
+    }
+    //estou fazendo uma consulta na tabela user, verificando se já existe user com o email que recebi do body.
+    let user = await prismaClient.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    //se existir retorno um erro
+    if (user) {
+      throw new AppException("Usuário já cadastrado!", 400);
+    }
+    //então, crio o user no banco com o prismaClient
+    user = await prismaClient.user.create({
+      select: {
+        id: true,
+        email: true,
+        permission: true,
+        created_at: true,
+        updated_at: true,
+      },
+      data: {
+        email,
+        permission,
+        //aqui está sendo feito o hash da senha do user
+        //onde passo no bcryptjs o password que recebi do body, e o segundo parametro é o salt(uma string aleatória)
+        password_hash: await bcryptjs.hash(password, 8),
+        brandId,
+      },
+    });
+    return user;
+  }
   async findUser(id) {
     const user = await prismaClient.user.findUnique({
       where: {
@@ -49,6 +93,18 @@ class UserService {
         permission: true,
         created_at: true,
         updated_at: true,
+        brand: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        IngredientsOnUsersAllergic: {
+          select: {
+            id: true,
+            ingredient: true,
+          },
+        },
       },
     });
     //caso não exista nenhum user com o respectivo ID, retorno um erro.
@@ -70,12 +126,31 @@ class UserService {
         permission: true,
         created_at: true,
         updated_at: true,
+        brand: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        IngredientsOnUsersAllergic: {
+          select: {
+            id: true,
+            ingredient: true,
+          },
+        },
       },
     });
     return users;
   }
 
-  async updateUser(id, email, password, permission, authorization) {
+  async updateUser(
+    id,
+    email,
+    password,
+    ingredients,
+    permission,
+    authorization
+  ) {
     if (!this.validationPermission(id, authorization)) {
       throw new AppException(
         "Acesso permitido somente à administradores!",
@@ -97,6 +172,13 @@ class UserService {
     if (!user) {
       throw new AppException("Usuário não encontrado!", 404);
     }
+
+    await prismaClient.IngredientsOnUsersAllergic.deleteMany({
+      where: {
+        userId: user.id,
+      }
+    })
+
     //update no banco pelo o id, enviando o data com o email e o password com hash
     user = await prismaClient.user.update({
       where: {
@@ -113,6 +195,15 @@ class UserService {
         email,
         permission,
         password_hash: await bcryptjs.hash(password, 8),
+        IngredientsOnUsersAllergic: {
+          create: ingredients?.map((ingredientId) => ({
+            ingredient: {
+              connect: {
+                id: ingredientId,
+              },
+            },
+          })),
+        },
       },
     });
     return user;

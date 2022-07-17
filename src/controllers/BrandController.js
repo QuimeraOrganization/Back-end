@@ -40,7 +40,7 @@ export class BrandController {
   async deleteBrand(req, res) {
     const { id } = req.params;
     const { authorization } = req.headers;
-    await brandService.deleteBranch(id, authorization);
+    await brandService.deleteBrand(id, authorization);
 
     return res.status(204).send();
   }
