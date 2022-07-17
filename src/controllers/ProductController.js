@@ -11,11 +11,13 @@ export class ProductController {
   }
 
   async findAll(req, res) {
+    const { contains_ingredients, no_contains_ingredients } = req.query;
+
     const limit = req.query.limit;
     const page = req.query.page;
     const skip = req.skip;
 
-    const products = await productService.findAll(limit, page, skip);
+    const products = await productService.findAll(limit, page, skip, contains_ingredients, no_contains_ingredients);
     return res.status(200).json(products);
   }
   async findAllProducts(req, res) {

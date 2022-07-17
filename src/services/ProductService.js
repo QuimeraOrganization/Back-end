@@ -86,30 +86,65 @@ class ProductService {
     return entity;
   }
 
-  async findAll(limit, page, skip) {
-    const [products, totalProducts] = await Promise.all([
-      prismaClient.product.findMany({
-        skip: skip,
-        take: limit,
-        include: includeResponseGet,
-      }),
-      prismaClient.product.count(),
-    ]);
+  async findAll(limit, page, skip, containsIngredients, noContainsIngredients) {
 
-    // Adiciona o link de download da imagem
-    for (let product of products) {
-      await this.getDownloadURL(product);
+    if (containsIngredients) {
+      const [products, totalProducts] = await Promise.all([
+        prismaClient.product.findMany({
+          where: {
+            OR: containsIngredients.map((ingredientId) => ({
+              IngredientsOnProducts: {
+                some: {
+                  ingredientId: parseInt(ingredientId)
+                }
+              }
+            }))
+          }
+        }),
+        prismaClient.product.count(),
+      ]);
+
+      // Adiciona o link de download da imagem
+      for (let product of products) {
+        await this.getDownloadURL(product);
+      }
+
+      const productsPage = {
+        data: products,
+        page: page,
+        limit: limit,
+        totalPages: parseInt(Math.ceil(totalProducts / limit)),
+        totalRecords: totalProducts,
+      };
+
+      return productsPage;
     }
 
-    const productsPage = {
-      data: products,
-      page: page,
-      limit: limit,
-      totalPages: parseInt(Math.ceil(totalProducts / limit)),
-      totalRecords: totalProducts,
-    };
+    if ((!containsIngredients) && (!noContainsIngredients)) {
+      const [products, totalProducts] = await Promise.all([
+        prismaClient.product.findMany({
+          skip: skip,
+          take: limit,
+          include: includeResponseGet,
+        }),
+        prismaClient.product.count(),
+      ]);
 
-    return productsPage;
+      // Adiciona o link de download da imagem
+      for (let product of products) {
+        await this.getDownloadURL(product);
+      }
+
+      const productsPage = {
+        data: products,
+        page: page,
+        limit: limit,
+        totalPages: parseInt(Math.ceil(totalProducts / limit)),
+        totalRecords: totalProducts,
+      };
+
+      return productsPage;
+    }
   }
 
   async findAllProducts() {
