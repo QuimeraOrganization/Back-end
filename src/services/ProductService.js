@@ -88,20 +88,25 @@ class ProductService {
 
   async findAll(limit, page, skip, containsIngredients, noContainsIngredients) {
 
+    const conditionsContainsIngredients = {
+      where: {
+        OR: containsIngredients?.map((ingredientId) => ({
+          IngredientsOnProducts: {
+            some: {
+              ingredientId: parseInt(ingredientId)
+            }
+          }
+        }))
+      }
+    }
+
     if (containsIngredients) {
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
-          where: {
-            OR: containsIngredients.map((ingredientId) => ({
-              IngredientsOnProducts: {
-                some: {
-                  ingredientId: parseInt(ingredientId)
-                }
-              }
-            }))
-          }
+          ...conditionsContainsIngredients,
+          include: includeResponseGet
         }),
-        prismaClient.product.count(),
+        prismaClient.product.count(conditionsContainsIngredients)
       ]);
 
       // Adiciona o link de download da imagem
@@ -224,12 +229,6 @@ class ProductService {
         if (product.id != id) {
           throw new AppException("Produto já cadastrado com esse nome", 400);
         }
-      }
-    });
-
-    await prismaClient.categoriesOnProducts.deleteMany({
-      where: {
-        productId: entity.id
       }
     });
 
