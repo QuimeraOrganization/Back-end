@@ -56,4 +56,12 @@ export class ProductController {
 
     return res.status(204).send({ message: "Produto deletado com sucesso!" });
   }
+
+  async deleteProductImage(req, res) {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    await productService.deleteProductImage(id, authorization);
+
+    return res.status(204).send({ message: "Imagem do produto deletado com sucesso!" });
+  }
 }
