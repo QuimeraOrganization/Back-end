@@ -286,4 +286,31 @@ productRoutes.delete(
   */
 );
 
+productRoutes.delete(
+  "/:id/image",
+  loginRequired,
+  productsController.deleteProductImage
+  /* 
+   #swagger.security = [{
+      "bearerAuth": []
+    }]
+  #swagger.summary = "Deleta um Produto!"
+  #swagger.description = "Essa rota é responsável por deletar um Produto!"
+  #swagger.tags = ['Products']
+  #swagger.parameters = [
+    {
+       "in": "path",
+       "name": "id",
+       "type": "string",
+       "required": true
+    }
+  ]
+
+  #swagger.responses[200] = {
+      "description": "Produto deletado com sucesso!"
+  }
+
+  */
+);
+
 export { productRoutes };

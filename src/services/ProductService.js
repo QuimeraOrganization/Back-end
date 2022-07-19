@@ -232,6 +232,12 @@ class ProductService {
       }
     });
 
+    await prismaClient.categoriesOnProducts.deleteMany({
+      where: {
+        productId: entity.id
+      }
+    });
+
     await prismaClient.ingredientsOnProducts.deleteMany({
       where: {
         productId: entity.id
@@ -306,6 +312,28 @@ class ProductService {
     });
   }
 
+  async deleteProductImage(id, authorization) {
+    if (!(await this.validationPermission(id, authorization))) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
+
+    const entity = await prismaClient.product.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!entity) {
+      throw new AppException("Produto não encontrado!", 404);
+    }
+
+    // Deleta imagem
+    await this.deleteImage(entity);
+  }
+
   async validationPermission(productId, authorization) {
     const [, token] = authorization.split(" ");
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -357,7 +385,7 @@ class ProductService {
   }
 
   async deleteImage(entity) {
-    if (!entity) {
+    if (entity) {
       const storageRef = ref(storage, entity.image);
 
       await deleteObject(storageRef)
@@ -367,6 +395,15 @@ class ProductService {
         .catch((err) => {
           throw new AppException(err.message, 500);
         });
+
+      await prismaClient.product.update({
+        where: {
+          id: entity.id
+        },
+        data: {
+          image: null
+        }
+      });
     }
   }
 
