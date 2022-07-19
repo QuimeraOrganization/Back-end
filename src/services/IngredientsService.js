@@ -84,7 +84,15 @@ class IngredientsService {
   }
 
   async findAll() {
-    const ingredients = await prismaClient.ingredient.findMany({});
+    const ingredients = await prismaClient.ingredient.findMany({
+      include: {
+        IngredientsOnProducts: {
+          select: {
+            product: true
+          }
+        }
+      }
+    });
 
     return ingredients;
   }
