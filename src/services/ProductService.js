@@ -86,18 +86,44 @@ class ProductService {
     return entity;
   }
 
-  async findAll(limit, page, skip, containsIngredients, noContainsIngredients) {
+  async findAll(limit, page, skip, containsIngredients, noContainsIngredients, categories) {
 
-    const conditionsContainsIngredients = {
-      where: {
-        OR: containsIngredients?.map((ingredientId) => ({
-          IngredientsOnProducts: {
-            some: {
-              ingredientId: parseInt(ingredientId)
+    if (categories) {
+
+      const conditionsContainsCategories = {
+        where: {
+          OR: categories?.map((categoryId) => ({
+            CategoriesOnProducts: {
+              some: {
+                categoryId: parseInt(categoryId)
+              }
             }
-          }
-        }))
+          }))
+        }
       }
+
+      const [products, totalProducts] = await Promise.all([
+        prismaClient.product.findMany({
+          ...conditionsContainsCategories,
+          include: includeResponseGet
+        }),
+        prismaClient.product.count(conditionsContainsCategories)
+      ]);
+
+      // Adiciona o link de download da imagem
+      for (let product of products) {
+        await this.getDownloadURL(product);
+      }
+
+      const productsPage = {
+        data: products,
+        page: page,
+        limit: limit,
+        totalPages: parseInt(Math.ceil(totalProducts / limit)),
+        totalRecords: totalProducts,
+      };
+
+      return productsPage;
     }
 
     if (noContainsIngredients) {
@@ -139,6 +165,19 @@ class ProductService {
     }
 
     if (containsIngredients) {
+
+      const conditionsContainsIngredients = {
+        where: {
+          OR: containsIngredients?.map((ingredientId) => ({
+            IngredientsOnProducts: {
+              some: {
+                ingredientId: parseInt(ingredientId)
+              }
+            }
+          }))
+        }
+      }
+
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
           ...conditionsContainsIngredients,
