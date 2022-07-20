@@ -100,6 +100,44 @@ class ProductService {
       }
     }
 
+    if (noContainsIngredients) {
+
+      const conditionsNoContainsIngredients = {
+        where: {
+          NOT: noContainsIngredients?.map((ingredientId) => ({
+            IngredientsOnProducts: {
+              some: {
+                ingredientId: parseInt(ingredientId)
+              }
+            }
+          }))
+        }
+      }
+
+      const [products, totalProducts] = await Promise.all([
+        prismaClient.product.findMany({
+          ...conditionsNoContainsIngredients,
+          include: includeResponseGet
+        }),
+        prismaClient.product.count(conditionsContainsIngredients)
+      ]);
+
+      // Adiciona o link de download da imagem
+      for (let product of products) {
+        await this.getDownloadURL(product);
+      }
+
+      const productsPage = {
+        data: products,
+        page: page,
+        limit: limit,
+        totalPages: parseInt(Math.ceil(totalProducts / limit)),
+        totalRecords: totalProducts,
+      };
+
+      return productsPage;
+    }
+
     if (containsIngredients) {
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
