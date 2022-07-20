@@ -31,9 +31,9 @@ const includeResponseGet = {
   },
   feedbacks: {
     include: {
-      user: true
-    }
-  }
+      user: true,
+    },
+  },
 };
 
 class ProductService {
@@ -86,28 +86,33 @@ class ProductService {
     return entity;
   }
 
-  async findAll(limit, page, skip, containsIngredients, noContainsIngredients, categories) {
-
+  async findAll(
+    limit,
+    page,
+    skip,
+    containsIngredients,
+    noContainsIngredients,
+    categories
+  ) {
     if (categories) {
-
       const conditionsContainsCategories = {
         where: {
           OR: categories?.map((categoryId) => ({
             CategoriesOnProducts: {
               some: {
-                categoryId: parseInt(categoryId)
-              }
-            }
-          }))
-        }
-      }
+                categoryId: parseInt(categoryId),
+              },
+            },
+          })),
+        },
+      };
 
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
           ...conditionsContainsCategories,
-          include: includeResponseGet
+          include: includeResponseGet,
         }),
-        prismaClient.product.count(conditionsContainsCategories)
+        prismaClient.product.count(conditionsContainsCategories),
       ]);
 
       // Adiciona o link de download da imagem
@@ -127,25 +132,24 @@ class ProductService {
     }
 
     if (noContainsIngredients) {
-
       const conditionsNoContainsIngredients = {
         where: {
           NOT: noContainsIngredients?.map((ingredientId) => ({
             IngredientsOnProducts: {
               some: {
-                ingredientId: parseInt(ingredientId)
-              }
-            }
-          }))
-        }
-      }
+                ingredientId: parseInt(ingredientId),
+              },
+            },
+          })),
+        },
+      };
 
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
           ...conditionsNoContainsIngredients,
-          include: includeResponseGet
+          include: includeResponseGet,
         }),
-        prismaClient.product.count(conditionsContainsIngredients)
+        prismaClient.product.count(conditionsNoContainsIngredients),
       ]);
 
       // Adiciona o link de download da imagem
@@ -165,25 +169,24 @@ class ProductService {
     }
 
     if (containsIngredients) {
-
       const conditionsContainsIngredients = {
         where: {
           OR: containsIngredients?.map((ingredientId) => ({
             IngredientsOnProducts: {
               some: {
-                ingredientId: parseInt(ingredientId)
-              }
-            }
-          }))
-        }
-      }
+                ingredientId: parseInt(ingredientId),
+              },
+            },
+          })),
+        },
+      };
 
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
           ...conditionsContainsIngredients,
-          include: includeResponseGet
+          include: includeResponseGet,
         }),
-        prismaClient.product.count(conditionsContainsIngredients)
+        prismaClient.product.count(conditionsContainsIngredients),
       ]);
 
       // Adiciona o link de download da imagem
@@ -202,7 +205,7 @@ class ProductService {
       return productsPage;
     }
 
-    if ((!containsIngredients) && (!noContainsIngredients)) {
+    if (!containsIngredients && !noContainsIngredients) {
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
           skip: skip,
@@ -311,14 +314,14 @@ class ProductService {
 
     await prismaClient.categoriesOnProducts.deleteMany({
       where: {
-        productId: entity.id
-      }
+        productId: entity.id,
+      },
     });
 
     await prismaClient.ingredientsOnProducts.deleteMany({
       where: {
-        productId: entity.id
-      }
+        productId: entity.id,
+      },
     });
 
     // Atualiza a entidade
@@ -475,11 +478,11 @@ class ProductService {
 
       await prismaClient.product.update({
         where: {
-          id: entity.id
+          id: entity.id,
         },
         data: {
-          image: null
-        }
+          image: null,
+        },
       });
     }
   }
