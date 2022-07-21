@@ -11,13 +11,13 @@ export class ProductController {
   }
 
   async findAll(req, res) {
-    const { contains_ingredients, no_contains_ingredients } = req.query;
+    const { contains_ingredients, no_contains_ingredients, categories } = req.query;
 
     const limit = req.query.limit;
     const page = req.query.page;
     const skip = req.skip;
 
-    const products = await productService.findAll(limit, page, skip, contains_ingredients, no_contains_ingredients);
+    const products = await productService.findAll(limit, page, skip, contains_ingredients, no_contains_ingredients, categories);
     return res.status(200).json(products);
   }
   async findAllProducts(req, res) {
@@ -55,5 +55,13 @@ export class ProductController {
     await productService.delete(id, authorization);
 
     return res.status(204).send({ message: "Produto deletado com sucesso!" });
+  }
+
+  async deleteProductImage(req, res) {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    await productService.deleteProductImage(id, authorization);
+
+    return res.status(204).send({ message: "Imagem do produto deletado com sucesso!" });
   }
 }

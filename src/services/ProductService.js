@@ -31,9 +31,9 @@ const includeResponseGet = {
   },
   feedbacks: {
     include: {
-      user: true
-    }
-  }
+      user: true,
+    },
+  },
 };
 
 class ProductService {
@@ -86,22 +86,33 @@ class ProductService {
     return entity;
   }
 
-  async findAll(limit, page, skip, containsIngredients, noContainsIngredients) {
+  async findAll(
+    limit,
+    page,
+    skip,
+    containsIngredients,
+    noContainsIngredients,
+    categories
+  ) {
+    if (categories) {
+      const conditionsContainsCategories = {
+        where: {
+          OR: categories?.map((categoryId) => ({
+            CategoriesOnProducts: {
+              some: {
+                categoryId: parseInt(categoryId),
+              },
+            },
+          })),
+        },
+      };
 
-    if (containsIngredients) {
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
-          where: {
-            OR: containsIngredients.map((ingredientId) => ({
-              IngredientsOnProducts: {
-                some: {
-                  ingredientId: parseInt(ingredientId)
-                }
-              }
-            }))
-          }
+          ...conditionsContainsCategories,
+          include: includeResponseGet,
         }),
-        prismaClient.product.count(),
+        prismaClient.product.count(conditionsContainsCategories),
       ]);
 
       // Adiciona o link de download da imagem
@@ -120,7 +131,81 @@ class ProductService {
       return productsPage;
     }
 
-    if ((!containsIngredients) && (!noContainsIngredients)) {
+    if (noContainsIngredients) {
+      const conditionsNoContainsIngredients = {
+        where: {
+          NOT: noContainsIngredients?.map((ingredientId) => ({
+            IngredientsOnProducts: {
+              some: {
+                ingredientId: parseInt(ingredientId),
+              },
+            },
+          })),
+        },
+      };
+
+      const [products, totalProducts] = await Promise.all([
+        prismaClient.product.findMany({
+          ...conditionsNoContainsIngredients,
+          include: includeResponseGet,
+        }),
+        prismaClient.product.count(conditionsNoContainsIngredients),
+      ]);
+
+      // Adiciona o link de download da imagem
+      for (let product of products) {
+        await this.getDownloadURL(product);
+      }
+
+      const productsPage = {
+        data: products,
+        page: page,
+        limit: limit,
+        totalPages: parseInt(Math.ceil(totalProducts / limit)),
+        totalRecords: totalProducts,
+      };
+
+      return productsPage;
+    }
+
+    if (containsIngredients) {
+      const conditionsContainsIngredients = {
+        where: {
+          OR: containsIngredients?.map((ingredientId) => ({
+            IngredientsOnProducts: {
+              some: {
+                ingredientId: parseInt(ingredientId),
+              },
+            },
+          })),
+        },
+      };
+
+      const [products, totalProducts] = await Promise.all([
+        prismaClient.product.findMany({
+          ...conditionsContainsIngredients,
+          include: includeResponseGet,
+        }),
+        prismaClient.product.count(conditionsContainsIngredients),
+      ]);
+
+      // Adiciona o link de download da imagem
+      for (let product of products) {
+        await this.getDownloadURL(product);
+      }
+
+      const productsPage = {
+        data: products,
+        page: page,
+        limit: limit,
+        totalPages: parseInt(Math.ceil(totalProducts / limit)),
+        totalRecords: totalProducts,
+      };
+
+      return productsPage;
+    }
+
+    if (!containsIngredients && !noContainsIngredients) {
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
           skip: skip,
@@ -229,14 +314,14 @@ class ProductService {
 
     await prismaClient.categoriesOnProducts.deleteMany({
       where: {
-        productId: entity.id
-      }
+        productId: entity.id,
+      },
     });
 
     await prismaClient.ingredientsOnProducts.deleteMany({
       where: {
-        productId: entity.id
-      }
+        productId: entity.id,
+      },
     });
 
     // Atualiza a entidade
@@ -307,6 +392,28 @@ class ProductService {
     });
   }
 
+  async deleteProductImage(id, authorization) {
+    if (!(await this.validationPermission(id, authorization))) {
+      throw new AppException(
+        "Acesso permitido somente à administradores!",
+        401
+      );
+    }
+
+    const entity = await prismaClient.product.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!entity) {
+      throw new AppException("Produto não encontrado!", 404);
+    }
+
+    // Deleta imagem
+    await this.deleteImage(entity);
+  }
+
   async validationPermission(productId, authorization) {
     const [, token] = authorization.split(" ");
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -358,7 +465,7 @@ class ProductService {
   }
 
   async deleteImage(entity) {
-    if (!entity) {
+    if (entity) {
       const storageRef = ref(storage, entity.image);
 
       await deleteObject(storageRef)
@@ -368,6 +475,15 @@ class ProductService {
         .catch((err) => {
           throw new AppException(err.message, 500);
         });
+
+      await prismaClient.product.update({
+        where: {
+          id: entity.id,
+        },
+        data: {
+          image: null,
+        },
+      });
     }
   }
 

@@ -163,7 +163,7 @@ class UserService {
       throw new AppException("Por favor, informe seu email e senha!", 401);
     }
     //consulta o banco pelo o id e verifica se o user existe antes de fazer o update;
-    let user = prismaClient.user.findUnique({
+    let user = await prismaClient.user.findUnique({
       where: {
         id: Number(id),
       },
@@ -175,9 +175,9 @@ class UserService {
 
     await prismaClient.IngredientsOnUsersAllergic.deleteMany({
       where: {
-        userId: user.id,
-      }
-    })
+        userId: Number(user.id),
+      },
+    });
 
     //update no banco pelo o id, enviando o data com o email e o password com hash
     user = await prismaClient.user.update({
