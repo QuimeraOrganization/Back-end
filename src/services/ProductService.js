@@ -92,8 +92,44 @@ class ProductService {
     skip,
     containsIngredients,
     noContainsIngredients,
-    categories
+    categories,
+    name
   ) {
+
+    if (name) {
+      const conditionsNameSearch = {
+        where: {
+          name: {
+            contains: name,
+            mode: 'insensitive',
+          }
+        }
+      };
+
+      const [products, totalProducts] = await Promise.all([
+        prismaClient.product.findMany({
+          ...conditionsNameSearch,
+          include: includeResponseGet,
+        }),
+        prismaClient.product.count(conditionsNameSearch),
+      ]);
+
+      // Adiciona o link de download da imagem
+      for (let product of products) {
+        await this.getDownloadURL(product);
+      }
+
+      const productsPage = {
+        data: products,
+        page: page,
+        limit: limit,
+        totalPages: parseInt(Math.ceil(totalProducts / limit)),
+        totalRecords: totalProducts,
+      };
+
+      return productsPage;
+    }
+
     if (categories) {
       const conditionsContainsCategories = {
         where: {
@@ -205,7 +241,7 @@ class ProductService {
       return productsPage;
     }
 
-    if (!containsIngredients && !noContainsIngredients) {
+    if (!containsIngredients && !noContainsIngredients && !categories && !name) {
       const [products, totalProducts] = await Promise.all([
         prismaClient.product.findMany({
           skip: skip,
