@@ -3,6 +3,9 @@ import { AppException } from "../exceptions/AppException.js";
 import jwt from "jsonwebtoken";
 class BrandService {
   async createBrand(name) {
+    if (!name) {
+      throw new AppException("Por favor, informe o nome da Marca!", 401);
+    }
     const brand = await prismaClient.brand.create({
       data: {
         name,

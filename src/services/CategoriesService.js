@@ -3,6 +3,9 @@ import { AppException } from "../exceptions/AppException.js";
 import jwt from "jsonwebtoken";
 class CategoriesService {
   async save(name) {
+    if (!name) {
+      throw new AppException("Por favor, informe o nome da Categoria!", 401);
+    }
     const categoryAlreadyExists = await prismaClient.category.findFirst({
       where: {
         name: name,
@@ -31,6 +34,11 @@ class CategoriesService {
         401
       );
     }
+
+    if (!name) {
+      throw new AppException("Por favor, informe o nome da Categoria!", 401);
+    }
+
     const categoryId = parseInt(id);
 
     const categoryAlreadyExists = await prismaClient.category.findUnique({

@@ -9,8 +9,8 @@ export class UsersController {
     let user = await userService.createUser(
       email,
       password,
-      permission,
-      ingredients
+      ingredients,
+      permission
     );
 
     return res
