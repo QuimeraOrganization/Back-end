@@ -4,7 +4,7 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 class UserService {
-  async createUser(email, password, permission, ingredients) {
+  async createUser(email, password, ingredients, permission) {
     if (!email || !password) {
       throw new AppException("Por favor, informe seu email e senha!", 401);
     }
@@ -26,6 +26,12 @@ class UserService {
         permission: true,
         created_at: true,
         updated_at: true,
+        IngredientsOnUsersAllergic: {
+          select: {
+            id: true,
+            ingredient: true,
+          },
+        },
       },
       data: {
         email,

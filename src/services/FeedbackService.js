@@ -102,6 +102,9 @@ class FeedbackService {
         401
       );
     }
+    if (!contents) {
+      throw new AppException("Por favor, informe o Comentário!", 401);
+    }
     let feedback = prismaClient.feedback.findUnique({
       where: {
         id: Number(id),
