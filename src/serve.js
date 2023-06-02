@@ -9,14 +9,7 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 3333;
 
-const corsOptions = {
-    origin: 'https://tccquimera.vercel.app',
-    methods: ['GET', 'POST', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization'], // Adicione seus cabeçalhos personalizados aqui
-  };
-  
-
-app.use(cors(corsOptions));
+app.use(cors());
   
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
