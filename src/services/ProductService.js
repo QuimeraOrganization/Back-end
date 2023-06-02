@@ -489,10 +489,11 @@ class ProductService {
         `products/${entity.id}/image.${fileExtension}`
       );
       console.log("após o ref")
-     uploadBytes(storageRef, image.buffer).then((snapshot) => {
-        // Adiciona o path da imagem na entidade produto
-        entity.image = snapshot.metadata.fullPath;
-      });
+        
+      const snapshot = await uploadBytes(storageRef, image.buffer)
+                  
+      entity.image = snapshot.metadata.fullPath;
+   
   
       console.log(entity);
   
