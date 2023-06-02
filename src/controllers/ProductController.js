@@ -11,6 +11,7 @@ export class ProductController {
   }
 
   async findAll(req, res) {
+    console.log("chegou")
     const { contains_ingredients, no_contains_ingredients, categories, name } = req.query;
 
     const limit = req.query.limit;
@@ -21,6 +22,8 @@ export class ProductController {
     return res.status(200).json(products);
   }
   async findAllProducts(req, res) {
+    console.log("chegou")
+
     const products = await productService.findAllProducts();
     return res.status(200).json(products);
   }
@@ -35,6 +38,8 @@ export class ProductController {
   async update(req, res) {
     const { id } = req.params;
     const { authorization } = req.headers;
+
+    console.log("chegou imagem")
 
     const productDTO = JSON.parse(req.body.product);
     const image = req.file;

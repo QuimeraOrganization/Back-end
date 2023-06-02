@@ -479,6 +479,10 @@ class ProductService {
   }
 
   async uploadImage(entity, image) {
+
+    console.log("uploadImage")
+
+
     const fileExtension = image.originalname.split(".")[1];
     const storageRef = ref(
       storage,
