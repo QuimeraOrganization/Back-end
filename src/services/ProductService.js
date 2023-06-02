@@ -503,7 +503,7 @@ class ProductService {
         data: entity,
       });
     }catch(error){
-      console.log(error)
+      console.log("error image", error)
     }
 
   }
