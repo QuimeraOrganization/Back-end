@@ -10,7 +10,7 @@ const app = express();
 const port = process.env.PORT || 3333;
 
 const corsOptions = {
-    origin: 'https://tcc-quimera.herokuapp.com',
+    origin: 'https://tccquimera.vercel.app',
     methods: ['GET', 'POST', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'], // Adicione seus cabeçalhos personalizados aqui
   };
