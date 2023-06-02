@@ -481,27 +481,31 @@ class ProductService {
   async uploadImage(entity, image) {
 
     console.log("uploadImage")
+    try{
 
+      const fileExtension = image.originalname.split(".")[1];
+      const storageRef = ref(
+        storage,
+        `products/${entity.id}/image.${fileExtension}`
+      );
+  
+      await uploadBytes(storageRef, image.buffer).then((snapshot) => {
+        // Adiciona o path da imagem na entidade produto
+        entity.image = snapshot.metadata.fullPath;
+      });
+  
+      console.log(entity);
+  
+      entity = await prismaClient.product.update({
+        where: {
+          id: Number(entity.id),
+        },
+        data: entity,
+      });
+    }catch(error){
+      console.log(error)
+    }
 
-    const fileExtension = image.originalname.split(".")[1];
-    const storageRef = ref(
-      storage,
-      `products/${entity.id}/image.${fileExtension}`
-    );
-
-    await uploadBytes(storageRef, image.buffer).then((snapshot) => {
-      // Adiciona o path da imagem na entidade produto
-      entity.image = snapshot.metadata.fullPath;
-    });
-
-    console.log(entity);
-
-    entity = await prismaClient.product.update({
-      where: {
-        id: Number(entity.id),
-      },
-      data: entity,
-    });
   }
 
   async deleteImage(entity) {
