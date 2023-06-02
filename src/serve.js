@@ -9,7 +9,15 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 3333;
 
-app.use(cors());
+const corsOptions = {
+    origin: 'https://tcc-quimera.herokuapp.com',
+    methods: ['GET', 'POST', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'], // Adicione seus cabeçalhos personalizados aqui
+  };
+  
+
+app.use(cors(corsOptions));
+  
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(paginate.middleware(10, 50));
