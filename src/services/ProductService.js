@@ -488,7 +488,7 @@ class ProductService {
         storage,
         `products/${entity.id}/image.${fileExtension}`
       );
-      console.log("após o ref")
+      console.log("após o ref", storageRef, image.buffer)
         
       const snapshot = await uploadBytes(storageRef, image.buffer)
                   
