@@ -480,20 +480,18 @@ class ProductService {
 
   async uploadImage(entity, image) {
 
-    console.log("uploadImage")
-    try{
+    
+  
 
       const fileExtension = image.originalname.split(".")[1];
       const storageRef = ref(
         storage,
         `products/${entity.id}/image.${fileExtension}`
       );
-      console.log("após o ref", storageRef, image.buffer)
-        
-      const snapshot = await uploadBytes(storageRef, image.buffer)
-                  
-      entity.image = snapshot.metadata.fullPath;
-   
+      await uploadBytes(storageRef, image.buffer).then((snapshot) => {
+        // Adiciona o path da imagem na entidade produto
+        entity.image = snapshot.metadata.fullPath;
+      });
   
       console.log(entity);
   
@@ -503,11 +501,9 @@ class ProductService {
         },
         data: entity,
       });
-    }catch(error){
-      console.log("error image", error)
     }
+   
 
-  }
 
   async deleteImage(entity) {
     if (entity) {
